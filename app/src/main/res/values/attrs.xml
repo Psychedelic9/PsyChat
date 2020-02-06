@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="BottomIcon">
+        <attr name="bottom_image" format="reference"></attr>
+        <attr name="bottom_image_select" format="reference"></attr>
+        <attr name="bottom_text" format="string"></attr>
+    </declare-styleable>
+    <declare-styleable name="SettingItem">
+        <attr name="setting_icon" format="reference"></attr>
+        <attr name="setting_text" format="string"/>
+    </declare-styleable>
+</resources>
