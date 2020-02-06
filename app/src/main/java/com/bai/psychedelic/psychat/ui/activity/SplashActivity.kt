@@ -17,12 +17,11 @@ import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.viewModel
 import java.lang.Exception
 import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
 
 class SplashActivity : AppCompatActivity() {
     companion object{
         @Volatile
-        private var skiped:Boolean = false
+        private var skipped:Boolean = false
     }
     private val mEMClient: EMClient by inject()
     private val mSingleExecutor: ExecutorService by inject()
@@ -32,7 +31,7 @@ class SplashActivity : AppCompatActivity() {
         window.statusBarColor = Color.TRANSPARENT
         StatusBarUtil.setStatusTextColor(true, this)
         mContext = this
-        skiped = false
+        skipped = false
         val binding: ActivitySplashBinding =
             DataBindingUtil.setContentView(this, R.layout.activity_splash)
         val viewModel: SplashViewModel by viewModel()
@@ -51,7 +50,7 @@ class SplashActivity : AppCompatActivity() {
         mSingleExecutor.submit {
             try {
                 Thread.sleep(3000)
-                if (!skiped){
+                if (!skipped){
                     jumpToNextActivity()
                 }
             }catch (e:Exception){
@@ -62,7 +61,7 @@ class SplashActivity : AppCompatActivity() {
 
     override fun onStop() {
         super.onStop()
-        skiped = true
+        skipped = true
     }
 
     private fun jumpToNextActivity() {
@@ -76,7 +75,7 @@ class SplashActivity : AppCompatActivity() {
     }
 
     fun skipClick(view: View) {
-        skiped = true
+        skipped = true
         jumpToNextActivity()
     }
 

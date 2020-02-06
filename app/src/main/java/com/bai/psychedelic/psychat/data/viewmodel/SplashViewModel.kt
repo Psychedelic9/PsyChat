@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
 class SplashViewModel:ViewModel(){
+
     val splashText: MutableLiveData<String> by lazy {
         MutableLiveData<String>()
     }

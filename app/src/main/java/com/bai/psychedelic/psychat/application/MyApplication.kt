@@ -6,10 +6,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Process
 import android.util.Log
-import com.bai.psychedelic.psychat.koin.adapterModule
-import com.bai.psychedelic.psychat.koin.netModule
-import com.bai.psychedelic.psychat.koin.repositoryModule
-import com.bai.psychedelic.psychat.koin.viewModelModule
+import com.bai.psychedelic.psychat.koin.*
 import com.bai.psychedelic.psychat.utils.MyLog
 import com.hyphenate.chat.EMClient
 import com.hyphenate.chat.EMOptions
@@ -29,7 +26,7 @@ class MyApplication : Application() {
 
         startKoin {
             androidContext(this@MyApplication)
-            modules(viewModelModule, netModule, repositoryModule, adapterModule)
+            modules(viewModelModule, netModule, repositoryModule,appModule)
         }
 
         val options = EMOptions()

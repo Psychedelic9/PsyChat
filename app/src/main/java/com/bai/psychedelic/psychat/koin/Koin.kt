@@ -2,6 +2,7 @@ package com.bai.psychedelic.psychat.koin
 
 
 
+import com.bai.psychedelic.psychat.data.viewmodel.LoginViewModel
 import com.bai.psychedelic.psychat.data.viewmodel.SplashViewModel
 import com.bai.psychedelic.psychat.repository.DataRepository
 import com.hyphenate.chat.EMClient
@@ -65,6 +66,10 @@ val netModule: Module = module {
 //    }
 
 
+
+
+}
+val appModule = module {
     single<EMClient> {
         EMClient.getInstance()
     }
@@ -72,7 +77,6 @@ val netModule: Module = module {
     single<ExecutorService>{
         Executors.newSingleThreadExecutor()
     }
-
 }
 /**
  * 适配器 Module
@@ -90,7 +94,7 @@ val repositoryModule: Module = module {
 
 val viewModelModule: Module = module {
 //    viewModel { MainViewModel(get()) }
-//    viewModel { LoginViewModel(get())}
+    viewModel { LoginViewModel() }
 //    viewModel { RegisterViewModel(get())}
 //    viewModel { WechatModel() }
 //    viewModel { ContactModel() }
