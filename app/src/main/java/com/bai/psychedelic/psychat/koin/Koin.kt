@@ -2,7 +2,9 @@ package com.bai.psychedelic.psychat.koin
 
 
 
+import com.bai.psychedelic.psychat.data.viewmodel.FragmentWeChatViewModel
 import com.bai.psychedelic.psychat.data.viewmodel.LoginViewModel
+import com.bai.psychedelic.psychat.data.viewmodel.MainViewModel
 import com.bai.psychedelic.psychat.data.viewmodel.SplashViewModel
 import com.bai.psychedelic.psychat.repository.DataRepository
 import com.hyphenate.chat.EMClient
@@ -93,10 +95,10 @@ val repositoryModule: Module = module {
 }
 
 val viewModelModule: Module = module {
-//    viewModel { MainViewModel(get()) }
+    viewModel { MainViewModel() }
     viewModel { LoginViewModel() }
 //    viewModel { RegisterViewModel(get())}
-//    viewModel { WechatModel() }
+    viewModel { FragmentWeChatViewModel() }
 //    viewModel { ContactModel() }
 //    viewModel { FindModel() }
 //    viewModel { MeModel() }

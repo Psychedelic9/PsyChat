@@ -43,6 +43,10 @@ class SplashActivity : AppCompatActivity() {
             binding.splashActivityText.text = newValue
         }
         viewModel.splashText.observe(this, splashTextObserver)
+        if (mEMClient.isLoggedInBefore){
+            mEMClient.chatManager().loadAllConversations()
+            mEMClient.groupManager().loadAllGroups()
+        }
     }
 
     override fun onStart() {

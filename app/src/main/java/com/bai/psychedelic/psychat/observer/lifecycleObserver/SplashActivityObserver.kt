@@ -9,7 +9,7 @@ class SplashActivityObserver constructor(context: Context): LifecycleObserver{
     private val mContext:Context = context
 
     @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
-    fun setSplashText(){
+    fun setListener(){
 
     }
 }

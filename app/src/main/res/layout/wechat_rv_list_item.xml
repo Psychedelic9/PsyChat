@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="chatListItem"
+            type="com.bai.psychedelic.psychat.data.entity.WechatRvListItemEntity" />
+    </data>
+
+    <LinearLayout
+        android:id="@+id/fragment_chat_item_ll"
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        android:background="@drawable/titlepop_item_selector"
+        android:orientation="horizontal">
+
+        <FrameLayout
+            android:layout_width="65dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="3dp">
+
+            <ImageView
+                android:id="@+id/wechat_rv_item_icon"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_gravity="center"
+                android:src="@drawable/icon" />
+
+            <ImageView
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:layout_gravity="center"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="-20dp"
+                android:background="@drawable/msg_count_bg_circle"
+
+                />
+
+            <TextView
+                android:id="@+id/wechat_rv_item_tv_msg_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="-20dp"
+                android:text="@{chatListItem.msgCount}"
+                android:textColor="@color/white"
+                android:textSize="10sp"
+                tools:text="10"
+
+                />
+
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="3dp"
+                        android:layout_marginTop="12dp"
+                        android:text="@{chatListItem.name}"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        tools:text="本群不当人" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="3dp"
+                        android:layout_marginTop="2dp"
+                        android:text="@{chatListItem.content}"
+                        android:textColor="#aaaaaa"
+                        android:textSize="12sp"
+                        tools:text="老鼠：哈哈" />
+
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginEnd="18dp"
+                    android:text="@{chatListItem.lastTime}"
+                    android:textColor="#aaaaaa"
+                    android:textSize="12sp"
+                    tools:text="下午9:29" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@drawable/app_selector_login_divider" />
+        </LinearLayout>
+    </LinearLayout>
+
+</layout>
