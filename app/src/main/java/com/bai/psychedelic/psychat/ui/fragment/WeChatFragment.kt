@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bai.psychedelic.psychat.BR
 
 import com.bai.psychedelic.psychat.R
-import com.bai.psychedelic.psychat.ui.adapter.ChatListRvAdapter
+import com.bai.psychedelic.psychat.ui.adapter.ConversationListRvAdapter
 import com.bai.psychedelic.psychat.data.entity.WechatRvListItemEntity
 import com.bai.psychedelic.psychat.data.viewmodel.FragmentWeChatViewModel
 import com.bai.psychedelic.psychat.databinding.WeChatFragmentBinding
@@ -23,7 +23,7 @@ class WeChatFragment : Fragment() {
     private lateinit var mBinding: WeChatFragmentBinding
     private lateinit var mRootView: View
     private lateinit var mChatList : ArrayList<WechatRvListItemEntity>
-    private lateinit var mAdapter : ChatListRvAdapter
+    private lateinit var mAdapter : ConversationListRvAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,7 +38,7 @@ class WeChatFragment : Fragment() {
     ): View? {
         mBinding = DataBindingUtil.inflate(inflater, R.layout.we_chat_fragment, container, false)
         mRootView = mBinding.root
-        mAdapter = ChatListRvAdapter(
+        mAdapter = ConversationListRvAdapter(
             mContext,
             mChatList,
             BR.chatListItem

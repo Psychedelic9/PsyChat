@@ -8,28 +8,39 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.RecyclerView
 import com.bai.psychedelic.psychat.R
-import com.bai.psychedelic.psychat.data.entity.WechatRvListItemEntity
-import com.bai.psychedelic.psychat.databinding.WechatRvListItemBinding
+import com.bai.psychedelic.psychat.data.entity.ChatItemEntity
+import com.bai.psychedelic.psychat.databinding.ChatRvListItemReceiveBinding
+import com.bai.psychedelic.psychat.databinding.ChatRvListItemSendBinding
+import com.bai.psychedelic.psychat.utils.CHAT_TYPE_SEND_TXT
 
-class ChatListRvAdapter(context: Context, list: ArrayList<WechatRvListItemEntity>, variableId: Int) :
-    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ChatListRvAdapter constructor(context: Context, list: ArrayList<ChatItemEntity>, variableId: Int) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val mContext = context
-    private val mList: ArrayList<WechatRvListItemEntity> = list
-    private val mVariableId = variableId
+    private val mList:ArrayList<ChatItemEntity>  = list
+    private val mVariabledId = variableId
 
-    public fun addData(entity: WechatRvListItemEntity) {
+    public fun addData(entity: ChatItemEntity){
         mList.add(entity)
         notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val binding = DataBindingUtil.inflate<WechatRvListItemBinding>(
-            LayoutInflater.from(mContext),
-            R.layout.wechat_rv_list_item, parent, false
-        )
-        val viewHolder = ChatListViewHolder(binding.root)
-        viewHolder.setBinding(binding)
-        return viewHolder
+        if (viewType == CHAT_TYPE_SEND_TXT){
+            val chatRvListSendBinding = DataBindingUtil.inflate<ChatRvListItemSendBinding>(
+                LayoutInflater.from(mContext),
+                R.layout.chat_rv_list_item_send,parent,false)
+            val viewHolder = ViewHolderSendOutText(chatRvListSendBinding.root)
+            viewHolder.setBinding(chatRvListSendBinding)
+            return viewHolder
+        }else
+//            if (viewType == CHAT_TYPE_GET_TXT)
+        {
+            val chatRvListReceiveBinding = DataBindingUtil.inflate<ChatRvListItemReceiveBinding>(
+                LayoutInflater.from(mContext),
+                R.layout.chat_rv_list_item_receive,parent,false)
+            val viewHolder = ViewHolderReceiveInText(chatRvListReceiveBinding.root)
+            viewHolder.setBinding(chatRvListReceiveBinding)
+            return viewHolder
+        }
     }
 
     override fun getItemCount(): Int {
@@ -37,20 +48,41 @@ class ChatListRvAdapter(context: Context, list: ArrayList<WechatRvListItemEntity
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        (holder as ChatListViewHolder).getBinding().setVariable(mVariableId,mList[position])
-        (holder.getBinding() as WechatRvListItemBinding).fragmentChatItemLl.setOnClickListener {
-            //TODO:jump to chat activity
+        if (holder is ViewHolderSendOutText){
+            (holder as ViewHolderSendOutText).getBinding().setVariable(mVariabledId, mList[position])
+            (holder as ViewHolderSendOutText).getBinding().executePendingBindings()
+        }else if (holder is ViewHolderReceiveInText){
+            (holder as ViewHolderReceiveInText).getBinding().setVariable(mVariabledId, mList[position])
+            (holder as ViewHolderReceiveInText).getBinding().executePendingBindings()
         }
-        holder.getBinding().executePendingBindings()
+
+
+
     }
 
-    inner class ChatListViewHolder(itemView: View) :
+    override fun getItemViewType(position: Int): Int {
+        val entity = mList.get(position)
+        return entity.type
+    }
+
+
+    inner class ViewHolderSendOutText(itemView: View) :
         RecyclerView.ViewHolder(itemView) {
         private var binding: ViewDataBinding? = null
         fun getBinding(): ViewDataBinding {
             return binding!!
         }
 
+        fun setBinding(binding: ViewDataBinding) {
+            this.binding = binding
+        }
+    }
+    inner class ViewHolderReceiveInText(itemView: View) :
+        RecyclerView.ViewHolder(itemView) {
+        private var binding: ViewDataBinding? = null
+        fun getBinding(): ViewDataBinding {
+            return binding!!
+        }
         fun setBinding(binding: ViewDataBinding) {
             this.binding = binding
         }

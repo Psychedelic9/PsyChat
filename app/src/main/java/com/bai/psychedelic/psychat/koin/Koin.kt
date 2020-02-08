@@ -99,8 +99,8 @@ val viewModelModule: Module = module {
 //    viewModel { ContactModel() }
 //    viewModel { FindModel() }
     viewModel { FragmentMeViewModel() }
-//    viewModel { ChatViewModel(get()) }
-//    viewModel { AddFriendViewModel(get()) }
+    viewModel { ChatViewModel() }
+    viewModel { AddFriendsViewModel() }
     viewModel { SplashViewModel() }
 
 }
