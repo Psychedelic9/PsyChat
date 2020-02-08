@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bai.psychedelic.psychat.BR
 
 import com.bai.psychedelic.psychat.R
-import com.bai.psychedelic.psychat.adapters.ChatListRvAdapter
+import com.bai.psychedelic.psychat.ui.adapter.ChatListRvAdapter
 import com.bai.psychedelic.psychat.data.entity.WechatRvListItemEntity
 import com.bai.psychedelic.psychat.data.viewmodel.FragmentWeChatViewModel
 import com.bai.psychedelic.psychat.databinding.WeChatFragmentBinding
@@ -38,7 +38,11 @@ class WeChatFragment : Fragment() {
     ): View? {
         mBinding = DataBindingUtil.inflate(inflater, R.layout.we_chat_fragment, container, false)
         mRootView = mBinding.root
-        mAdapter = ChatListRvAdapter(mContext,mChatList,BR.chatListItem)
+        mAdapter = ChatListRvAdapter(
+            mContext,
+            mChatList,
+            BR.chatListItem
+        )
         mBinding.wechatRv.layoutManager = LinearLayoutManager(mContext)
         mBinding.wechatRv.adapter = mAdapter
         return mRootView

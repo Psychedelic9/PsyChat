@@ -1,4 +1,4 @@
-package com.bai.psychedelic.psychat.adapters
+package com.bai.psychedelic.psychat.ui.adapter
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager

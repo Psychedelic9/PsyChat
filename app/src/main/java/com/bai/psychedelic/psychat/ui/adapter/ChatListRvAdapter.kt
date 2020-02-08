@@ -1,4 +1,4 @@
-package com.bai.psychedelic.psychat.adapters
+package com.bai.psychedelic.psychat.ui.adapter
 
 import android.content.Context
 import android.view.LayoutInflater

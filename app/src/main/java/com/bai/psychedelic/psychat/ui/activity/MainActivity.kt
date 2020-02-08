@@ -8,7 +8,7 @@ import android.widget.LinearLayout
 import androidx.databinding.DataBindingUtil
 import androidx.viewpager.widget.ViewPager
 import com.bai.psychedelic.psychat.R
-import com.bai.psychedelic.psychat.adapters.MainPagerViewAdapter
+import com.bai.psychedelic.psychat.ui.adapter.MainPagerViewAdapter
 import com.bai.psychedelic.psychat.data.viewmodel.MainViewModel
 import com.bai.psychedelic.psychat.databinding.ActivityMainBinding
 import com.bai.psychedelic.psychat.observer.lifecycleObserver.MainActivityObserverconstructor
@@ -48,7 +48,8 @@ class MainActivity : AppCompatActivity() {
         mTabs.add(mBinding.mainViewIncludeBottom.bottonIconFind)
         mTabs.add(mBinding.mainViewIncludeBottom.bottonIconMe)
         mTabs[0].setProgress(1f)
-        mBinding.mainViewPager.adapter = MainPagerViewAdapter(supportFragmentManager)
+        mBinding.mainViewPager.adapter =
+            MainPagerViewAdapter(supportFragmentManager)
         mBinding.mainViewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrolled(
                 position: Int,

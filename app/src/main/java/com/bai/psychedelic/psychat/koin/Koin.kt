@@ -2,10 +2,7 @@ package com.bai.psychedelic.psychat.koin
 
 
 
-import com.bai.psychedelic.psychat.data.viewmodel.FragmentWeChatViewModel
-import com.bai.psychedelic.psychat.data.viewmodel.LoginViewModel
-import com.bai.psychedelic.psychat.data.viewmodel.MainViewModel
-import com.bai.psychedelic.psychat.data.viewmodel.SplashViewModel
+import com.bai.psychedelic.psychat.data.viewmodel.*
 import com.bai.psychedelic.psychat.repository.DataRepository
 import com.hyphenate.chat.EMClient
 import okhttp3.Cache
@@ -101,7 +98,7 @@ val viewModelModule: Module = module {
     viewModel { FragmentWeChatViewModel() }
 //    viewModel { ContactModel() }
 //    viewModel { FindModel() }
-//    viewModel { MeModel() }
+    viewModel { FragmentMeViewModel() }
 //    viewModel { ChatViewModel(get()) }
 //    viewModel { AddFriendViewModel(get()) }
     viewModel { SplashViewModel() }

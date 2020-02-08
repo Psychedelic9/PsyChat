@@ -1,13 +1,152 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.fragment.MeFragment">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <TextView
+    <data>
+        <variable
+            name="model"
+            type="com.bai.psychedelic.psychat.data.viewmodel.FragmentMeViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Hello" />
+        android:background="@color/bar_color"
+        android:orientation="vertical">
 
-</FrameLayout>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/fragment_me_cl_top"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/bgcolor"
+            app:layout_constraintBottom_toTopOf="@+id/fragment_me_si_money"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/fragment_me_iv_icon"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="40dp"
+                android:layout_marginBottom="30dp"
+                android:src="@drawable/a6a"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/fragment_me_tv_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:text="祁门路搅屎王"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintLeft_toRightOf="@+id/fragment_me_iv_icon"
+                app:layout_constraintTop_toTopOf="@+id/fragment_me_iv_icon" />
+
+            <TextView
+                android:id="@+id/fragment_me_tv_id"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="微信号：123456"
+                app:layout_constraintBottom_toBottomOf="@+id/fragment_me_iv_icon"
+                app:layout_constraintLeft_toLeftOf="@+id/fragment_me_tv_name"
+                app:layout_constraintLeft_toRightOf="@+id/fragment_me_iv_icon"
+                app:layout_constraintTop_toBottomOf="@+id/fragment_me_tv_name" />
+
+            <ImageView
+                android:id="@+id/fragment_me_iv_QRCode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="20dp"
+                android:src="@drawable/qr_code"
+                app:layout_constraintBottom_toBottomOf="@+id/fragment_me_tv_id"
+                app:layout_constraintRight_toRightOf="@+id/fragment_me_iv_next"
+                app:layout_constraintTop_toTopOf="@+id/fragment_me_tv_id" />
+
+            <ImageView
+                android:id="@+id/fragment_me_iv_next"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
+                android:src="@drawable/right"
+                app:layout_constraintBottom_toBottomOf="@+id/fragment_me_iv_QRCode"
+                app:layout_constraintLeft_toRightOf="@+id/fragment_me_iv_QRCode"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/fragment_me_iv_QRCode" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <com.bai.psychedelic.psychat.ui.custom.SettingItem
+            android:id="@+id/fragment_me_si_money"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/fragment_me_cl_top"
+            app:setting_icon="@drawable/icon_me_money"
+            app:setting_text="@string/me_pay" />
+
+        <com.bai.psychedelic.psychat.ui.custom.SettingItem
+            android:id="@+id/fragment_me_si_collect"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/fragment_me_si_money"
+            app:setting_icon="@drawable/icon_me_collect"
+            app:setting_text="@string/me_collect" />
+
+        <com.bai.psychedelic.psychat.ui.custom.SettingItem
+            android:id="@+id/fragment_me_si_photo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="1dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/fragment_me_si_collect"
+            app:setting_icon="@drawable/icon_me_photo"
+            app:setting_text="@string/me_photo" />
+
+        <com.bai.psychedelic.psychat.ui.custom.SettingItem
+            android:id="@+id/fragment_me_si_card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="1dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/fragment_me_si_photo"
+            app:setting_icon="@drawable/icon_me_card"
+            app:setting_text="@string/me_card" />
+
+        <com.bai.psychedelic.psychat.ui.custom.SettingItem
+            android:id="@+id/fragment_me_si_emoji"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="1dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/fragment_me_si_card"
+            app:setting_icon="@drawable/icon_me_smail"
+            app:setting_text="@string/me_emoji" />
+
+        <com.bai.psychedelic.psychat.ui.custom.SettingItem
+            android:id="@+id/fragment_me_si_setting"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/fragment_me_si_emoji"
+            app:setting_icon="@drawable/icon_me_setting"
+            app:setting_text="@string/me_setting"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</layout>
