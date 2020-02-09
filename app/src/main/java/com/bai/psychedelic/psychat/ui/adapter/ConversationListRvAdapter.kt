@@ -1,6 +1,7 @@
 package com.bai.psychedelic.psychat.ui.adapter
 
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +11,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bai.psychedelic.psychat.R
 import com.bai.psychedelic.psychat.data.entity.WechatRvListItemEntity
 import com.bai.psychedelic.psychat.databinding.WechatRvListItemBinding
+import com.bai.psychedelic.psychat.ui.activity.ChatActivity
+import com.bai.psychedelic.psychat.utils.CONVERSATION_USER_ID
 
 class ConversationListRvAdapter(context: Context, list: ArrayList<WechatRvListItemEntity>, variableId: Int) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -39,7 +42,9 @@ class ConversationListRvAdapter(context: Context, list: ArrayList<WechatRvListIt
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         (holder as ChatListViewHolder).getBinding().setVariable(mVariableId,mList[position])
         (holder.getBinding() as WechatRvListItemBinding).fragmentChatItemLl.setOnClickListener {
-            //TODO:jump to chat activity
+            val intent = Intent(mContext,ChatActivity::class.java)
+            intent.putExtra(CONVERSATION_USER_ID,mList[position])
+            mContext.startActivity(intent)
         }
         holder.getBinding().executePendingBindings()
     }

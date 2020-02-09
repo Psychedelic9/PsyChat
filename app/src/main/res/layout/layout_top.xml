@@ -66,6 +66,7 @@
                     android:background="@drawable/title_bar_icon_selector"
                     android:clickable="true"
                     android:gravity="center"
+                    android:onClick="onTitileButtonAddClick"
                     android:orientation="horizontal">
 
                     <ImageView

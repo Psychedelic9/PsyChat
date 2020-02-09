@@ -47,4 +47,6 @@ class AddFriendsActivity : AppCompatActivity() {
         onBackPressed()
     }
 
+    fun searchConfirmClick(view: View) {}
+
 }

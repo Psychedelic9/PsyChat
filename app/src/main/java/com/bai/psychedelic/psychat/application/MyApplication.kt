@@ -6,13 +6,16 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Process
 import android.util.Log
+import com.bai.psychedelic.psychat.database.MyMigration
 import com.bai.psychedelic.psychat.koin.*
 import com.bai.psychedelic.psychat.utils.MyLog
 import com.hyphenate.chat.EMClient
 import com.hyphenate.chat.EMOptions
 import io.realm.Realm
+import io.realm.RealmConfiguration
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
+import java.io.FileNotFoundException
 
 
 class MyApplication : Application() {
@@ -22,7 +25,18 @@ class MyApplication : Application() {
         MyLog.d(TAG, "onCreate")
 
         Realm.init(applicationContext)
-        val realm = Realm.getDefaultInstance()
+
+        val realmConfig = RealmConfiguration.Builder()
+            .name("myrealm.realm")
+            .schemaVersion(1)
+            .migration(MyMigration())
+            .build()
+        Realm.setDefaultConfiguration(realmConfig)
+        try {
+            Realm.migrateRealm(realmConfig)
+        }catch (e:FileNotFoundException){
+            e.printStackTrace()
+        }
 
         startKoin {
             androidContext(this@MyApplication)

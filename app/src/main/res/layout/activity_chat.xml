@@ -42,7 +42,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="10"
-                tools:text="本群不当人"
+                tools:text="@{model.mNickName}"
                 style="@style/txt_titleStyle1"
                 android:gravity="center_vertical"
                 />

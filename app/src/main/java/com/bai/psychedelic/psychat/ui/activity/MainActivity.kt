@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.widget.LinearLayout
 import androidx.databinding.DataBindingUtil
 import androidx.viewpager.widget.ViewPager
@@ -117,6 +118,10 @@ class MainActivity : AppCompatActivity() {
         statusBarFill.layoutParams = layoutParams
         window.statusBarColor = resources.getColor(R.color.bar_color)
         StatusBarUtil.setStatusTextColor(true, this)
+    }
+
+    fun onTitileButtonAddClick(view: View) {
+        AddFriendsActivity.actionStart(mContext)
     }
 
 

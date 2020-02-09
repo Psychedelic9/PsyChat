@@ -30,9 +30,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".ui.activity.AddFriendsActivity"></activity>
-        <activity android:name=".ui.activity.ChatActivity" />
-        <activity android:name=".ui.activity.RegisterActivity" />
+        <activity android:name=".ui.activity.AddFriendsActivity"
+            android:launchMode="singleTop"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
+        <activity android:name=".ui.activity.ChatActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+        <activity android:name=".ui.activity.RegisterActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
         <activity
             android:name=".ui.activity.LoginActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />

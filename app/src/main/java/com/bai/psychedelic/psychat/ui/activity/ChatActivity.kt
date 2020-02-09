@@ -12,18 +12,17 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bai.psychedelic.psychat.BR
 import com.bai.psychedelic.psychat.R
 import com.bai.psychedelic.psychat.data.entity.ChatItemEntity
+import com.bai.psychedelic.psychat.data.entity.WechatRvListItemEntity
 import com.bai.psychedelic.psychat.data.viewmodel.ChatViewModel
 import com.bai.psychedelic.psychat.databinding.ActivityChatBinding
 import com.bai.psychedelic.psychat.listener.SoftKeyBoardListener
 import com.bai.psychedelic.psychat.ui.adapter.ChatListRvAdapter
-import com.bai.psychedelic.psychat.utils.CHAT_TYPE_SEND_TXT
-import com.bai.psychedelic.psychat.utils.MyLog
-import com.bai.psychedelic.psychat.utils.StatusBarUtil
+import com.bai.psychedelic.psychat.utils.*
 import org.koin.android.viewmodel.ext.android.viewModel
 
 class ChatActivity : AppCompatActivity() {
     private val TAG = "ChatActivity"
-
+    private lateinit var entity: WechatRvListItemEntity
     private val mViewModel:ChatViewModel by viewModel()
     private lateinit var mBinding:ActivityChatBinding
     private lateinit var mAdapter:ChatListRvAdapter
@@ -40,11 +39,17 @@ class ChatActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mContext = this
+        val entity = intent.getParcelableExtra<WechatRvListItemEntity>(CONVERSATION_USER_ID)
+        if (entity?.nickName != null){
+            mViewModel.setConversationUserId(entity.name)
+            mViewModel.setConversationNickName(entity.nickName)
+        }
+
         mBinding = DataBindingUtil.setContentView(this,R.layout.activity_chat)
         mBinding.model = mViewModel
         mBinding.chatActivityRv.layoutManager = LinearLayoutManager(mContext)
         mList = mViewModel.getChatList()
-        mAdapter = ChatListRvAdapter(mContext,mList, BR.model)
+        mAdapter = ChatListRvAdapter(mContext,mList, BR.item)
         mBinding.chatActivityRv.adapter = mAdapter
 
         setStatusBar()
@@ -87,13 +92,13 @@ class ChatActivity : AppCompatActivity() {
     }
 
     private fun setStatusBar(){
-        val resources = resources
-        val resourceId = resources.getIdentifier("status_bar_height", "dimen", "android")
-        val height = resources.getDimensionPixelSize(resourceId)
-        val statusBarFill = mBinding.chatActivityStatusBarFill
-        val layoutParams = statusBarFill.layoutParams as LinearLayout.LayoutParams
-        layoutParams.height = height
-        statusBarFill.layoutParams = layoutParams
+//        val resources = resources
+//        val resourceId = resources.getIdentifier("status_bar_height", "dimen", "android")
+//        val height = resources.getDimensionPixelSize(resourceId)
+//        val statusBarFill = mBinding.chatActivityStatusBarFill
+//        val layoutParams = statusBarFill.layoutParams as LinearLayout.LayoutParams
+//        layoutParams.height = height
+//        statusBarFill.layoutParams = layoutParams
         window.statusBarColor = resources.getColor(R.color.bar_color)
         StatusBarUtil.setStatusTextColor(true,this)
     }

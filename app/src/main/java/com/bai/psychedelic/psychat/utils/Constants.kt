@@ -22,3 +22,5 @@ const val SP_USER = "sp_user"
 const val NOT_LOGIN = "未登录"
 
 const val SP_SPLASH_TEXT = "sp_splash_text"
+/** 会话ID */
+const val CONVERSATION_USER_ID = "conversation_user_id"

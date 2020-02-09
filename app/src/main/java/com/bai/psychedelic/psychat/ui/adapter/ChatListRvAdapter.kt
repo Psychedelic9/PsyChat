@@ -49,11 +49,11 @@ class ChatListRvAdapter constructor(context: Context, list: ArrayList<ChatItemEn
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (holder is ViewHolderSendOutText){
-            (holder as ViewHolderSendOutText).getBinding().setVariable(mVariabledId, mList[position])
-            (holder as ViewHolderSendOutText).getBinding().executePendingBindings()
+            holder.getBinding().setVariable(mVariabledId, mList[position])
+            holder.getBinding().executePendingBindings()
         }else if (holder is ViewHolderReceiveInText){
-            (holder as ViewHolderReceiveInText).getBinding().setVariable(mVariabledId, mList[position])
-            (holder as ViewHolderReceiveInText).getBinding().executePendingBindings()
+            holder .getBinding().setVariable(mVariabledId, mList[position])
+            holder.getBinding().executePendingBindings()
         }
 
 
