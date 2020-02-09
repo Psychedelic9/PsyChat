@@ -32,7 +32,6 @@ class ChatActivity : AppCompatActivity() {
     companion object {
         fun actionStart(context: Context) {
             MyLog.d("ChatActivity","actionStart()")
-            //TODO:传递参数
             context.startActivity(Intent(context, ChatActivity::class.java))
         }
     }
