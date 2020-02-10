@@ -28,7 +28,7 @@ class MyApplication : Application() {
 
         val realmConfig = RealmConfiguration.Builder()
             .name("myrealm.realm")
-            .schemaVersion(1)
+            .schemaVersion(2)
             .migration(MyMigration())
             .build()
         Realm.setDefaultConfiguration(realmConfig)

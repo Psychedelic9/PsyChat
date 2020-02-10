@@ -20,6 +20,10 @@ class MyMigration : RealmMigration {
             wechatRvListItemSchema?.addField("nickName",String::class.java, FieldAttribute.REQUIRED)
             wechatRvListItemSchema?.addField("localNickName",String::class.java, FieldAttribute.REQUIRED)
             oldVersion.inc()
+        }else if (oldVersion == 1L){
+            val wechatRvListItemSchema = schema["WechatRvListItemEntity"]
+            wechatRvListItemSchema?.addField("messageType",String::class.java, FieldAttribute.REQUIRED)
+            oldVersion.inc()
         }
 
     }

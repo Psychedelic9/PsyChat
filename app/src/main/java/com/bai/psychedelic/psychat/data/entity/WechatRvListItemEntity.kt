@@ -15,7 +15,8 @@ open class WechatRvListItemEntity(
     var msgCount: String = "",
     var lastTime: String = "",
     var nickName: String = "",
-    var localNickName: String = ""
+    var localNickName: String = "",
+    var messageType: String = ""
 ) : RealmObject(), Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readLong(),
@@ -25,7 +26,9 @@ open class WechatRvListItemEntity(
         parcel.readString().toString(),
         parcel.readString().toString(),
         parcel.readString().toString(),
+        parcel.readString().toString(),
         parcel.readString().toString()
+
     )
 
     override fun writeToParcel(dest: Parcel?, flags: Int) {
@@ -37,6 +40,7 @@ open class WechatRvListItemEntity(
         dest?.writeString(lastTime)
         dest?.writeString(nickName)
         dest?.writeString(localNickName)
+        dest?.writeString(messageType)
     }
 
     override fun describeContents(): Int {

@@ -5,7 +5,6 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import android.widget.LinearLayout
 import androidx.core.widget.addTextChangedListener
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -18,6 +17,8 @@ import com.bai.psychedelic.psychat.databinding.ActivityChatBinding
 import com.bai.psychedelic.psychat.listener.SoftKeyBoardListener
 import com.bai.psychedelic.psychat.ui.adapter.ChatListRvAdapter
 import com.bai.psychedelic.psychat.utils.*
+import com.hyphenate.chat.EMClient
+import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.viewModel
 
 class ChatActivity : AppCompatActivity() {
@@ -28,6 +29,7 @@ class ChatActivity : AppCompatActivity() {
     private lateinit var mAdapter:ChatListRvAdapter
     private var mList = ArrayList<ChatItemEntity>()
     private lateinit var mContext:Context
+    private val mEMClient:EMClient by inject()
 
     companion object {
         fun actionStart(context: Context) {
@@ -43,11 +45,10 @@ class ChatActivity : AppCompatActivity() {
             mViewModel.setConversationUserId(entity.name)
             mViewModel.setConversationNickName(entity.nickName)
         }
-
         mBinding = DataBindingUtil.setContentView(this,R.layout.activity_chat)
         mBinding.model = mViewModel
         mBinding.chatActivityRv.layoutManager = LinearLayoutManager(mContext)
-        mList = mViewModel.getChatList()
+        mList = mViewModel.refreshChatList()
         mAdapter = ChatListRvAdapter(mContext,mList, BR.item)
         mBinding.chatActivityRv.adapter = mAdapter
 
