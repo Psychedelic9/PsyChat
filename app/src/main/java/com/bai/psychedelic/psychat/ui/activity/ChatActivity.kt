@@ -91,13 +91,6 @@ class ChatActivity : AppCompatActivity() {
     }
 
     private fun setStatusBar(){
-//        val resources = resources
-//        val resourceId = resources.getIdentifier("status_bar_height", "dimen", "android")
-//        val height = resources.getDimensionPixelSize(resourceId)
-//        val statusBarFill = mBinding.chatActivityStatusBarFill
-//        val layoutParams = statusBarFill.layoutParams as LinearLayout.LayoutParams
-//        layoutParams.height = height
-//        statusBarFill.layoutParams = layoutParams
         window.statusBarColor = resources.getColor(R.color.bar_color)
         StatusBarUtil.setStatusTextColor(true,this)
     }
