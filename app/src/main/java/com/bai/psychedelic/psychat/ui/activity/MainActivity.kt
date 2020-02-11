@@ -12,7 +12,7 @@ import com.bai.psychedelic.psychat.R
 import com.bai.psychedelic.psychat.ui.adapter.MainPagerViewAdapter
 import com.bai.psychedelic.psychat.data.viewmodel.MainViewModel
 import com.bai.psychedelic.psychat.databinding.ActivityMainBinding
-import com.bai.psychedelic.psychat.observer.lifecycleObserver.MainActivityObserverconstructor
+import com.bai.psychedelic.psychat.observer.lifecycleObserver.MainActivityObserver
 import com.bai.psychedelic.psychat.ui.custom.BottonIcon
 import com.bai.psychedelic.psychat.utils.StatusBarUtil
 import com.hyphenate.chat.EMClient
@@ -24,7 +24,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var mBinding:ActivityMainBinding
     private var mTabs = ArrayList<BottonIcon>()
     private val mEMClient: EMClient by inject()
-    private lateinit var mLifecycleObserver:MainActivityObserverconstructor
+    private lateinit var mLifecycleObserver:MainActivityObserver
     companion object {
         fun actionStart(context: Context) {
             context.startActivity(Intent(context, MainActivity::class.java))
@@ -37,7 +37,7 @@ class MainActivity : AppCompatActivity() {
         val viewModel: MainViewModel by viewModel()
         mBinding.model = viewModel
 
-        mLifecycleObserver = MainActivityObserverconstructor(mContext)
+        mLifecycleObserver = MainActivityObserver(mContext)
         lifecycle.addObserver(mLifecycleObserver)
         setStatusBar()
         setTabs()

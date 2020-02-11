@@ -15,6 +15,7 @@ import com.bai.psychedelic.psychat.data.entity.WechatRvListItemEntity
 import com.bai.psychedelic.psychat.data.viewmodel.ChatViewModel
 import com.bai.psychedelic.psychat.databinding.ActivityChatBinding
 import com.bai.psychedelic.psychat.listener.SoftKeyBoardListener
+import com.bai.psychedelic.psychat.observer.lifecycleObserver.ChatActivityObserver
 import com.bai.psychedelic.psychat.ui.adapter.ChatListRvAdapter
 import com.bai.psychedelic.psychat.utils.*
 import com.hyphenate.chat.EMClient
@@ -30,7 +31,7 @@ class ChatActivity : AppCompatActivity() {
     private var mList = ArrayList<ChatItemEntity>()
     private lateinit var mContext:Context
     private val mEMClient:EMClient by inject()
-
+    private lateinit var mLifecycleObserver:ChatActivityObserver
     companion object {
         fun actionStart(context: Context) {
             MyLog.d("ChatActivity","actionStart()")
@@ -48,15 +49,24 @@ class ChatActivity : AppCompatActivity() {
         mBinding = DataBindingUtil.setContentView(this,R.layout.activity_chat)
         mBinding.model = mViewModel
         mBinding.chatActivityRv.layoutManager = LinearLayoutManager(mContext)
-        mList = mViewModel.refreshChatList()
+        mList = mViewModel.getChatList()
         mAdapter = ChatListRvAdapter(mContext,mList, BR.item)
         mBinding.chatActivityRv.adapter = mAdapter
+
+        mLifecycleObserver = ChatActivityObserver(this)
+        lifecycle.addObserver(mLifecycleObserver)
 
         setStatusBar()
         setListener()
         mBinding.chatActivityRv.smoothScrollToPosition(mList.size)
 
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        lifecycle.removeObserver(mLifecycleObserver)
+    }
+
     private fun setListener(){
         mBinding.chatActivityEt.addTextChangedListener {
                 MyLog.d(TAG, "text = $it")
@@ -96,6 +106,10 @@ class ChatActivity : AppCompatActivity() {
         StatusBarUtil.setStatusTextColor(true,this)
     }
 
+    fun refreshChatList(){
+        mAdapter.refreshList(mViewModel.getChatList())
+    }
+
     fun sendMessageButtonClick(view: View) {
         val entity = ChatItemEntity().apply {
             id = 12346
@@ -103,7 +117,8 @@ class ChatActivity : AppCompatActivity() {
             content = mBinding.chatActivityEt.text.toString()
             type = CHAT_TYPE_SEND_TXT
         }
-        mAdapter.addData(entity)
+//        mAdapter.refreshData(entity)
+        //TODO:send message
         mBinding.chatActivityRv.smoothScrollToPosition(mList.size)
         mBinding.chatActivityEt.setText("")
     }

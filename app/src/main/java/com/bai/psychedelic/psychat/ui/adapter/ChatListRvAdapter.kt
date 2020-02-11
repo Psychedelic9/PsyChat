@@ -9,17 +9,21 @@ import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.RecyclerView
 import com.bai.psychedelic.psychat.R
 import com.bai.psychedelic.psychat.data.entity.ChatItemEntity
+import com.bai.psychedelic.psychat.data.viewmodel.ChatViewModel
 import com.bai.psychedelic.psychat.databinding.ChatRvListItemReceiveBinding
 import com.bai.psychedelic.psychat.databinding.ChatRvListItemSendBinding
 import com.bai.psychedelic.psychat.utils.CHAT_TYPE_SEND_TXT
+import org.koin.android.viewmodel.ext.android.viewModel
+import org.koin.core.KoinComponent
 
 class ChatListRvAdapter constructor(context: Context, list: ArrayList<ChatItemEntity>, variableId: Int) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val mContext = context
-    private val mList:ArrayList<ChatItemEntity>  = list
+    private var mList:ArrayList<ChatItemEntity>  = list
     private val mVariabledId = variableId
 
-    public fun addData(entity: ChatItemEntity){
-        mList.add(entity)
+    fun refreshList(list:ArrayList<ChatItemEntity>){
+        mList.clear()
+        mList = list
         notifyDataSetChanged()
     }
 

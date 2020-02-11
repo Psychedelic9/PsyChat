@@ -9,22 +9,63 @@ import com.bai.psychedelic.psychat.ui.activity.MainActivity
 import com.bai.psychedelic.psychat.utils.MyLog
 import com.hyphenate.EMConnectionListener
 import com.hyphenate.EMError
+import com.hyphenate.EMMessageListener
 import com.hyphenate.chat.EMClient
+import com.hyphenate.chat.EMMessage
 import com.hyphenate.util.NetUtils
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 
-class MainActivityObserverconstructor(context: Context) : LifecycleObserver,KoinComponent {
+class MainActivityObserver constructor(context: Context) : LifecycleObserver,KoinComponent {
     val TAG = "MainActivityObserverconstructor"
     private val mContext: Context = context
     private lateinit var mConnectionListener: MyConnectionListener
     private val mEMClient:EMClient by inject()
+    private lateinit var mMsgListener: EMMessageListener
 
     @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
     fun setConnectionListener(){
         MyLog.d(TAG,"setConnectionListener()")
         mConnectionListener = MyConnectionListener(mContext)
         mEMClient.addConnectionListener(mConnectionListener)
+    }
+    @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
+    fun initMsgListener(){
+        mMsgListener = object :EMMessageListener{
+            override fun onMessageRecalled(messages: MutableList<EMMessage>?) {
+
+            }
+
+            override fun onMessageChanged(message: EMMessage?, change: Any?) {
+
+            }
+
+            override fun onCmdMessageReceived(messages: MutableList<EMMessage>?) {
+
+            }
+
+            override fun onMessageReceived(messages: MutableList<EMMessage>?) {
+
+            }
+
+            override fun onMessageDelivered(messages: MutableList<EMMessage>?) {
+
+            }
+
+            override fun onMessageRead(messages: MutableList<EMMessage>?) {
+
+            }
+        }
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    fun addMsgListener(){
+        mEMClient.chatManager().addMessageListener(mMsgListener)
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+    fun removeMsgListener(){
+        mEMClient.chatManager().removeMessageListener(mMsgListener)
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)

@@ -19,7 +19,7 @@ class ChatViewModel:ViewModel(),KoinComponent {
     var mNickName:String = ""
     private val mEMClient:EMClient by inject()
     private lateinit var mConversation: EMConversation
-    fun refreshChatList():ArrayList<ChatItemEntity>{
+    fun getChatList():ArrayList<ChatItemEntity>{
         val messages = mConversation.allMessages
         mList.clear()
         messages.forEach {
