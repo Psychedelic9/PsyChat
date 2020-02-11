@@ -3,6 +3,7 @@ package com.bai.psychedelic.psychat.data.viewmodel
 import android.annotation.SuppressLint
 import androidx.lifecycle.ViewModel
 import com.bai.psychedelic.psychat.data.entity.WechatRvListItemEntity
+import com.bai.psychedelic.psychat.utils.UserUtils
 import com.hyphenate.chat.EMClient
 import com.hyphenate.chat.EMConversation
 import com.hyphenate.chat.EMMessage
@@ -45,9 +46,9 @@ class FragmentWeChatViewModel : ViewModel(),KoinComponent {
                 name = conversation?.conversationId().toString(),
                 content = conversationLastMessage,
                 msgCount = conversation?.unreadMsgCount.toString(),
-                lastTime = SimpleDateFormat("HH:mm").format(Date(((conversation?.lastMessage?.msgTime)!! / 1000))),
+                lastTime = UserUtils.changeLongTimeToDateTime(conversation?.lastMessage?.msgTime),
                 icon = "123",
-                nickName = conversation.lastMessage.userName,
+                nickName = conversation?.lastMessage?.userName.toString(),
                 messageType = conversationType
             )
             list.add(entity)

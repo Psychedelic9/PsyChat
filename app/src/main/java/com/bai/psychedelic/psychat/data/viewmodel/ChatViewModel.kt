@@ -4,13 +4,12 @@ import androidx.lifecycle.ViewModel
 import com.bai.psychedelic.psychat.data.entity.ChatItemEntity
 import com.bai.psychedelic.psychat.utils.CHAT_TYPE_GET_TXT
 import com.bai.psychedelic.psychat.utils.CHAT_TYPE_SEND_TXT
-import com.hyphenate.chat.EMClient
-import com.hyphenate.chat.EMConversation
 import org.koin.core.KoinComponent
 import org.koin.core.inject
-import com.hyphenate.chat.EMMessage
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
-import com.hyphenate.chat.EMImageMessageBody
+import com.bai.psychedelic.psychat.utils.UserUtils
+import com.hyphenate.chat.*
+import java.lang.reflect.Type
 
 
 class ChatViewModel:ViewModel(),KoinComponent {
@@ -22,10 +21,36 @@ class ChatViewModel:ViewModel(),KoinComponent {
     private lateinit var mConversation: EMConversation
     fun refreshChatList():ArrayList<ChatItemEntity>{
         val messages = mConversation.allMessages
+        mList.clear()
         messages.forEach {
-            val chatItemEntity = ChatItemEntity().apply {
-                //TODO:根据消息类型创建对应Entity
-            }
+            val chatItemEntity = ChatItemEntity()
+
+                when(it?.type){
+                    EMMessage.Type.TXT->{
+                        chatItemEntity.apply {
+                            type = if (it.from ==  mEMClient.currentUser){
+                                CHAT_TYPE_SEND_TXT
+                            }else{
+                                CHAT_TYPE_GET_TXT
+                            }
+                            name = it.from
+                            content = (it.body as EMTextMessageBody).message
+                            sendTime = UserUtils.changeLongTimeToDateTime(it.msgTime)
+                        }
+                        mList.add(chatItemEntity)
+                        return@forEach
+                    }
+                    EMMessage.Type.IMAGE->{}
+                    EMMessage.Type.VIDEO->{}
+                    EMMessage.Type.LOCATION->{}
+                    EMMessage.Type.VOICE->{}
+                    EMMessage.Type.FILE->{}
+                    EMMessage.Type.CMD->{}
+
+                }
+
+
+
         }
         mList.add(ChatItemEntity().apply {
             content = "啥hi撒大大"
