@@ -1,6 +1,7 @@
 package com.bai.psychedelic.psychat.data.viewmodel
 
 import android.annotation.SuppressLint
+import android.view.View
 import androidx.lifecycle.ViewModel
 import com.bai.psychedelic.psychat.data.entity.WechatRvListItemEntity
 import com.bai.psychedelic.psychat.utils.UserUtils
@@ -56,5 +57,13 @@ class FragmentWeChatViewModel : ViewModel(),KoinComponent {
 
         return list
 
+    }
+
+    fun getMsgCountVisibility(entity:WechatRvListItemEntity):Int{
+        return if (entity.msgCount == "0"){
+            View.GONE
+        }else{
+            View.VISIBLE
+        }
     }
 }

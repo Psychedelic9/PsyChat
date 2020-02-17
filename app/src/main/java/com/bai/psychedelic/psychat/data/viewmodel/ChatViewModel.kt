@@ -18,9 +18,19 @@ class ChatViewModel:ViewModel(),KoinComponent {
     private var mConversationUserId:String = ""
     var mNickName:String = ""
     private val mEMClient:EMClient by inject()
+    private var pagesize = 20
     private lateinit var mConversation: EMConversation
     fun getChatList():ArrayList<ChatItemEntity>{
-        val messages = mConversation.allMessages
+        var messages = mConversation.allMessages
+        val msgCount = messages?.size ?: 0
+        if (msgCount < mConversation.allMsgCount && msgCount < pagesize) {
+            var msgId: String? = null
+            if (messages != null && messages.size > 0) {
+                msgId = messages[0].msgId
+            }
+            val messageDB = mConversation.loadMoreMsgFromDB(msgId, pagesize - msgCount)
+            messages = messageDB+messages
+        }
         mList.clear()
         messages.forEach {
             val chatItemEntity = ChatItemEntity()
@@ -52,21 +62,26 @@ class ChatViewModel:ViewModel(),KoinComponent {
 
 
         }
-        mList.add(ChatItemEntity().apply {
-            content = "啥hi撒大大"
-            sendTime = "1992.09.08 12:12:12"
-            name = "民工"
-
-        })
         return mList
     }
     fun setConversationNickName(name:String){
         mNickName = name
     }
 
+    fun sendTextMessage(content:String){
+        val message = EMMessage.createTxtSendMessage(content, mConversationUserId)
+        if (mConversation.type == EMConversation.EMConversationType.GroupChat){
+            message.chatType = EMMessage.ChatType.GroupChat
+        }
+        mEMClient.chatManager().sendMessage(message)
+    }
+
     fun setConversationUserId(id:String){
         this.mConversationUserId = id
         mConversation = mEMClient.chatManager().getConversation(mConversationUserId)
+    }
 
+    fun getConversation():EMConversation{
+        return mConversation
     }
 }

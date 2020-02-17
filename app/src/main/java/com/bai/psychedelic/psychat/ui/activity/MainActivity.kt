@@ -37,7 +37,7 @@ class MainActivity : AppCompatActivity() {
         val viewModel: MainViewModel by viewModel()
         mBinding.model = viewModel
 
-        mLifecycleObserver = MainActivityObserver(mContext)
+        mLifecycleObserver = MainActivityObserver(this)
         lifecycle.addObserver(mLifecycleObserver)
         setStatusBar()
         setTabs()
@@ -120,7 +120,7 @@ class MainActivity : AppCompatActivity() {
         StatusBarUtil.setStatusTextColor(true, this)
     }
 
-    fun onTitileButtonAddClick(view: View) {
+    fun onTitleButtonAddClick(view: View) {
         AddFriendsActivity.actionStart(mContext)
     }
 

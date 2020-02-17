@@ -96,6 +96,6 @@ class LoginActivity : AppCompatActivity() {
     }
 
     fun registerClick(view: View) {
-
+        RegisterActivity.actionStart(mContext)
     }
 }

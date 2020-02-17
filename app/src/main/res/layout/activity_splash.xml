@@ -12,7 +12,9 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.activity.SplashActivity">
+        tools:context=".ui.activity.SplashActivity"
+        android:fitsSystemWindows="true"
+        >
         <TextView
             android:id="@+id/splash_activity_text"
             android:layout_width="wrap_content"
@@ -26,6 +28,7 @@
             android:text="聊个鸡巴"
             android:ems="1"
             android:textSize="150sp"
+            android:autoSizeTextType="uniform"
             android:textStyle="bold"
             />
         <Button

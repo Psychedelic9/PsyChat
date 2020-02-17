@@ -12,8 +12,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:focusable="true"
+        android:clickable="true"
         android:focusableInTouchMode="true"
         android:fitsSystemWindows="true"
+
         >
         <LinearLayout
             android:id="@+id/chat_activity_status_bar_fill"
@@ -37,6 +39,7 @@
                 android:layout_marginBottom="15dp"
                 android:layout_height="wrap_content"
                 android:src="@drawable/back"
+                android:onClick="chatTitleBackClick"
                 />
             <TextView
                 android:layout_width="0dp"

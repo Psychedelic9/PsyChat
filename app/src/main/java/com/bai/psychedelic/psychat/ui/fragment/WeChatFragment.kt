@@ -15,7 +15,10 @@ import com.bai.psychedelic.psychat.ui.adapter.ConversationListRvAdapter
 import com.bai.psychedelic.psychat.data.entity.WechatRvListItemEntity
 import com.bai.psychedelic.psychat.data.viewmodel.FragmentWeChatViewModel
 import com.bai.psychedelic.psychat.databinding.WeChatFragmentBinding
+import com.bai.psychedelic.psychat.observer.lifecycleObserver.WeChatFragmentObserver
+import com.bai.psychedelic.psychat.utils.MyLog
 import org.koin.android.viewmodel.ext.android.viewModel
+import java.lang.Exception
 
 class WeChatFragment : Fragment() {
     private val mViewModel:FragmentWeChatViewModel by viewModel()
@@ -24,12 +27,12 @@ class WeChatFragment : Fragment() {
     private lateinit var mRootView: View
     private lateinit var mChatList : ArrayList<WechatRvListItemEntity>
     private lateinit var mAdapter : ConversationListRvAdapter
-
+    private lateinit var mLifecycleObserver: WeChatFragmentObserver
+    private val TAG = "WeChatFragment"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mContext = activity as AppCompatActivity
         mChatList = mViewModel.getChatListFromDB()
-
     }
 
     override fun onCreateView(
@@ -45,12 +48,30 @@ class WeChatFragment : Fragment() {
         )
         mBinding.wechatRv.layoutManager = LinearLayoutManager(mContext)
         mBinding.wechatRv.adapter = mAdapter
+        mLifecycleObserver = WeChatFragmentObserver(this)
+        lifecycle.addObserver(mLifecycleObserver)
         return mRootView
+    }
+
+    override fun onResume() {
+        super.onResume()
+        refreshConversationList()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        lifecycle.removeObserver(mLifecycleObserver)
+    }
+
+    fun refreshConversationList(){
+
+        val list = mViewModel.getChatListFromDB()
+        MyLog.d(TAG,"refreshConversationList list.size = ${list.size}")
+        mAdapter.refreshList(list)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
     }
 
 }

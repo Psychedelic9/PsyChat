@@ -17,11 +17,16 @@ import com.bai.psychedelic.psychat.utils.CONVERSATION_USER_ID
 class ConversationListRvAdapter(context: Context, list: ArrayList<WechatRvListItemEntity>, variableId: Int) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val mContext = context
-    private val mList: ArrayList<WechatRvListItemEntity> = list
+    private var mList: ArrayList<WechatRvListItemEntity> = list
     private val mVariableId = variableId
 
     public fun addData(entity: WechatRvListItemEntity) {
         mList.add(entity)
+        notifyDataSetChanged()
+    }
+
+    fun refreshList(list:ArrayList<WechatRvListItemEntity>){
+        mList = list
         notifyDataSetChanged()
     }
 
@@ -41,11 +46,19 @@ class ConversationListRvAdapter(context: Context, list: ArrayList<WechatRvListIt
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         (holder as ChatListViewHolder).getBinding().setVariable(mVariableId,mList[position])
+        if (mList[position].msgCount == "0"){
+            (holder.getBinding()as WechatRvListItemBinding).wechatRvItemImMsgCountBg.visibility = View.GONE
+            (holder.getBinding()as WechatRvListItemBinding).wechatRvItemTvMsgCount.visibility = View.GONE
+        }else{
+            (holder.getBinding()as WechatRvListItemBinding).wechatRvItemImMsgCountBg.visibility = View.VISIBLE
+            (holder.getBinding()as WechatRvListItemBinding).wechatRvItemTvMsgCount.visibility = View.VISIBLE
+        }
         (holder.getBinding() as WechatRvListItemBinding).fragmentChatItemLl.setOnClickListener {
             val intent = Intent(mContext,ChatActivity::class.java)
             intent.putExtra(CONVERSATION_USER_ID,mList[position])
             mContext.startActivity(intent)
         }
+
         holder.getBinding().executePendingBindings()
     }
 

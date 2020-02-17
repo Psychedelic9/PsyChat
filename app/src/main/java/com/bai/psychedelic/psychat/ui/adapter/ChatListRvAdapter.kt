@@ -22,7 +22,6 @@ class ChatListRvAdapter constructor(context: Context, list: ArrayList<ChatItemEn
     private val mVariabledId = variableId
 
     fun refreshList(list:ArrayList<ChatItemEntity>){
-        mList.clear()
         mList = list
         notifyDataSetChanged()
     }
