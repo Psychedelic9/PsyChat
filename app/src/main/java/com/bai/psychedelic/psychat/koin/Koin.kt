@@ -96,7 +96,7 @@ val viewModelModule: Module = module {
     viewModel { LoginViewModel() }
 //    viewModel { RegisterViewModel(get())}
     viewModel { FragmentWeChatViewModel() }
-//    viewModel { ContactModel() }
+    viewModel { FragmentContactListViewModel() }
 //    viewModel { FindModel() }
     viewModel { FragmentMeViewModel() }
     viewModel { ChatViewModel() }

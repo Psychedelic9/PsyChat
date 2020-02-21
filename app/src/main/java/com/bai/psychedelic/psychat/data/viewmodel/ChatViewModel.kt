@@ -58,9 +58,6 @@ class ChatViewModel:ViewModel(),KoinComponent {
                     EMMessage.Type.CMD->{}
 
                 }
-
-
-
         }
         return mList
     }

@@ -48,6 +48,7 @@ class WeChatFragment : Fragment() {
         )
         mBinding.wechatRv.layoutManager = LinearLayoutManager(mContext)
         mBinding.wechatRv.adapter = mAdapter
+        mBinding.model = mViewModel
         mLifecycleObserver = WeChatFragmentObserver(this)
         lifecycle.addObserver(mLifecycleObserver)
         return mRootView

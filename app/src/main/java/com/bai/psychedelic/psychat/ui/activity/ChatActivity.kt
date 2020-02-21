@@ -73,6 +73,11 @@ class ChatActivity : AppCompatActivity() {
         mViewModel.getConversation().markAllMessagesAsRead()
     }
 
+    override fun onPause() {
+        super.onPause()
+        mViewModel.getConversation().markAllMessagesAsRead()
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         lifecycle.removeObserver(mLifecycleObserver)
