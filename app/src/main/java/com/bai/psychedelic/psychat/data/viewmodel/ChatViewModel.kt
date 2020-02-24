@@ -20,6 +20,16 @@ class ChatViewModel:ViewModel(),KoinComponent {
     private val mEMClient:EMClient by inject()
     private var pagesize = 20
     private lateinit var mConversation: EMConversation
+    private var mKeyBoardHeight:Int = 900
+
+    fun setKeyBoardHeight(height:Int){
+        mKeyBoardHeight = height
+    }
+
+    fun getKeyBoardHeight():String{
+        return mKeyBoardHeight.toString()+"dp"
+    }
+
     fun getChatList():ArrayList<ChatItemEntity>{
         var messages = mConversation.allMessages
         val msgCount = messages?.size ?: 0

@@ -22,5 +22,7 @@ const val SP_USER = "sp_user"
 const val NOT_LOGIN = "未登录"
 
 const val SP_SPLASH_TEXT = "sp_splash_text"
+const val SP_KEYBOARD_HEIGHT = "sp_keyboard_height"
+
 /** 会话ID */
 const val CONVERSATION_USER_ID = "conversation_user_id"

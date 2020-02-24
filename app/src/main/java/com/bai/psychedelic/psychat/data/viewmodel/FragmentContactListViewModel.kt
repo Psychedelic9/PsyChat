@@ -10,7 +10,7 @@ class FragmentContactListViewModel : ViewModel(),KoinComponent {
     private val mEMClient:EMClient by inject()
     fun getContactList():ArrayList<ContactListItemEntity>{
         var list = ArrayList<ContactListItemEntity>()
-        
+
         return list
     }
 }
