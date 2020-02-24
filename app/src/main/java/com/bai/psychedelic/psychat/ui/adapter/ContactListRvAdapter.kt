@@ -1,24 +1,39 @@
 package com.bai.psychedelic.psychat.ui.adapter
 
 import android.content.Context
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.RecyclerView
+import com.bai.psychedelic.psychat.R
 import com.bai.psychedelic.psychat.data.entity.ContactListItemEntity
+import com.bai.psychedelic.psychat.databinding.ContactListRvItemBinding
 
 class ContactListRvAdapter constructor(context:Context,list:ArrayList<ContactListItemEntity>,variableId: Int)
     :RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    private var mList:ArrayList<ContactListItemEntity> = list
+    private val mContext:Context = context
+    private val mVariableId:Int = variableId
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val contactListBinding = DataBindingUtil.inflate<ContactListRvItemBinding>(LayoutInflater.from(mContext),
+            R.layout.contact_list_rv_item,parent,false)
+        val viewHolder = ViewHolder(contactListBinding.root)
+        viewHolder.setBinding(contactListBinding)
+        return viewHolder
     }
 
     override fun getItemCount(): Int {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return mList.size
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        if (holder is ViewHolder){
+            holder.getBinding().setVariable(mVariableId, mList[position])
+            holder.getBinding().executePendingBindings()
+        }
+
     }
 
 

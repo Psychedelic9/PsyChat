@@ -9,17 +9,14 @@ import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.RecyclerView
 import com.bai.psychedelic.psychat.R
 import com.bai.psychedelic.psychat.data.entity.ChatItemEntity
-import com.bai.psychedelic.psychat.data.viewmodel.ChatViewModel
 import com.bai.psychedelic.psychat.databinding.ChatRvListItemReceiveBinding
 import com.bai.psychedelic.psychat.databinding.ChatRvListItemSendBinding
 import com.bai.psychedelic.psychat.utils.CHAT_TYPE_SEND_TXT
-import org.koin.android.viewmodel.ext.android.viewModel
-import org.koin.core.KoinComponent
 
 class ChatListRvAdapter constructor(context: Context, list: ArrayList<ChatItemEntity>, variableId: Int) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val mContext = context
     private var mList:ArrayList<ChatItemEntity>  = list
-    private val mVariabledId = variableId
+    private val mVariableId = variableId
 
     fun refreshList(list:ArrayList<ChatItemEntity>){
         mList = list
@@ -52,10 +49,10 @@ class ChatListRvAdapter constructor(context: Context, list: ArrayList<ChatItemEn
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (holder is ViewHolderSendOutText){
-            holder.getBinding().setVariable(mVariabledId, mList[position])
+            holder.getBinding().setVariable(mVariableId, mList[position])
             holder.getBinding().executePendingBindings()
         }else if (holder is ViewHolderReceiveInText){
-            holder .getBinding().setVariable(mVariabledId, mList[position])
+            holder .getBinding().setVariable(mVariableId, mList[position])
             holder.getBinding().executePendingBindings()
         }
 

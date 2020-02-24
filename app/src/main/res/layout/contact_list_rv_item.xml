@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <variable
+            name="contactListItem"
+            type="com.bai.psychedelic.psychat.data.entity.ContactListItemEntity" />
+    </data>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+        <ImageView
+            android:id="@+id/contact_list_rv_list_item_icon"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@mipmap/ic_launcher"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="5dp"
+            />
+        <TextView
+            android:id="@+id/contact_list_rv_list_item_name"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            app:layout_constraintLeft_toRightOf="@+id/contact_list_rv_list_item_icon"
+            app:layout_constraintTop_toTopOf="@+id/contact_list_rv_list_item_icon"
+            app:layout_constraintBottom_toBottomOf="@+id/contact_list_rv_list_item_icon"
+            app:layout_constraintRight_toRightOf="parent"
+            android:text="新的朋友"
+            android:textSize="22sp"
+            android:gravity="center_vertical"
+            android:layout_marginStart="10dp"
+            />
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            app:layout_constraintRight_toRightOf="@+id/contact_list_rv_list_item_name"
+            app:layout_constraintLeft_toLeftOf="@+id/contact_list_rv_list_item_name"
+            app:layout_constraintTop_toBottomOf="@+id/contact_list_rv_list_item_name"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/app_selector_login_divider" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

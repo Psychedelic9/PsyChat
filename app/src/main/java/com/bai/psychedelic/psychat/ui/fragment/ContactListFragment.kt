@@ -8,10 +8,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.bai.psychedelic.psychat.BR
 
 import com.bai.psychedelic.psychat.R
+import com.bai.psychedelic.psychat.data.entity.ContactListItemEntity
 import com.bai.psychedelic.psychat.data.viewmodel.FragmentContactListViewModel
 import com.bai.psychedelic.psychat.databinding.ContactListFragmentBinding
+import com.bai.psychedelic.psychat.ui.adapter.ContactListRvAdapter
 import org.koin.android.viewmodel.ext.android.viewModel
 
 class ContactListFragment : Fragment() {
@@ -20,6 +24,8 @@ class ContactListFragment : Fragment() {
     private lateinit var mBinding: ContactListFragmentBinding
     private lateinit var mRootView: View
     private lateinit var mContext:Context
+    private lateinit var mAdapter:ContactListRvAdapter
+    private lateinit var mContactList:ArrayList<ContactListItemEntity>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,6 +39,10 @@ class ContactListFragment : Fragment() {
         mBinding = DataBindingUtil.inflate(inflater,R.layout.contact_list_fragment,container,false)
         mRootView = mBinding.root
         mBinding.model = mViewModel
+        mContactList = mViewModel.getContactList()
+        mAdapter = ContactListRvAdapter(mContext,mContactList, BR.contactListItem)
+        mBinding.fragmentContactListRv.layoutManager = LinearLayoutManager(mContext)
+        mBinding.fragmentContactListRv.adapter = mAdapter
         return mRootView
     }
 
