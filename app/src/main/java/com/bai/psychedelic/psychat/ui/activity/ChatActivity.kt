@@ -1,5 +1,6 @@
 package com.bai.psychedelic.psychat.ui.activity
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -23,6 +24,7 @@ import com.hyphenate.chat.EMClient
 import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.viewModel
 import android.view.inputmethod.InputMethodManager
+import java.lang.Exception
 
 
 class ChatActivity : AppCompatActivity() {
@@ -37,9 +39,10 @@ class ChatActivity : AppCompatActivity() {
     private lateinit var mLifecycleObserver: ChatActivityObserver
     private lateinit var imm: InputMethodManager
     private var mKeyBoardHeight = 0
-    private var isKeyBoardShow:Boolean = false
-    private var mStatusBarHeight:Int = 0
-
+    private var isKeyBoardShow: Boolean = false
+    private var mStatusBarHeight: Int = 0
+    private var isNeedShowMore = false
+    private var isNeedSmoothRv = true
 
     companion object {
         fun actionStart(context: Context) {
@@ -87,6 +90,7 @@ class ChatActivity : AppCompatActivity() {
         lifecycle.removeObserver(mLifecycleObserver)
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun setListener() {
         mBinding.chatActivityEt.addTextChangedListener {
             MyLog.d(TAG, "text = $it")
@@ -106,33 +110,41 @@ class ChatActivity : AppCompatActivity() {
                         mBinding.chatActivityRv.smoothScrollToPosition(mBinding.chatActivityRv.adapter!!.itemCount - 1)
                     }
                 }
-                MyLog.d(TAG,"height = ${oldBottom-bottom}")
+                MyLog.d(TAG, "height = ${oldBottom - bottom}")
+
             }
         }
         SoftKeyBoardListener.setListener(this,
             object : SoftKeyBoardListener.OnSoftKeyBoardChangeListener {
                 override fun keyBoardShow(height: Int) {
                     MyLog.d(TAG, "键盘显示 高度:$height")
+                    setIsNeedShowMore(false)
+                    mBinding.chatActivityClMore.visibility = View.GONE
                     isKeyBoardShow = true
                     val sp = getSharedPreferences(SP_KEYBOARD_HEIGHT, Context.MODE_PRIVATE)
-                    sp.edit().putString(SP_KEYBOARD_HEIGHT,height.toString()).apply()
+                    sp.edit().putString(SP_KEYBOARD_HEIGHT, height.toString()).apply()
                     mKeyBoardHeight = height
                     mViewModel.setKeyBoardHeight(mKeyBoardHeight)
-                    MyLog.d(TAG,"mKeyBoardHeight = $mKeyBoardHeight + mStatusBarHeight = $mStatusBarHeight")
-                    mBinding.chatActivityClMore.minHeight = mKeyBoardHeight+mStatusBarHeight*2
-
-                    mBinding.chatActivityClMore.visibility = View.GONE
+                    MyLog.d(
+                        TAG,
+                        "mKeyBoardHeight = $mKeyBoardHeight + mStatusBarHeight = $mStatusBarHeight"
+                    )
+                    mBinding.chatActivityClMore.minHeight = mKeyBoardHeight + mStatusBarHeight * 2
                 }
 
                 override fun keyBoardHide(height: Int) {
                     MyLog.d(TAG, "键盘隐藏 高度:$height")
                     isKeyBoardShow = false
+                    if (getIsNeedShowMore()) {
+                        mBinding.chatActivityClMore.visibility = View.VISIBLE
+                        setIsNeedShowMore(false)
+                    }
                 }
 
             })
         mBinding.chatActivityEt.setOnFocusChangeListener { view, hasFocus ->
             if (!hasFocus) {
-                MyLog.d(TAG,"OnFocusChangeListener lose focus")
+                MyLog.d(TAG, "OnFocusChangeListener lose focus")
                 imm.hideSoftInputFromWindow(
                     view.windowToken,
                     InputMethodManager.HIDE_NOT_ALWAYS
@@ -141,10 +153,10 @@ class ChatActivity : AppCompatActivity() {
         }
         mBinding.chatActivityRv.setOnTouchListener { view, event ->
             if (event.action == MotionEvent.ACTION_DOWN)
-            imm.hideSoftInputFromWindow(
-                view.windowToken,
-                InputMethodManager.HIDE_NOT_ALWAYS
-            )
+                imm.hideSoftInputFromWindow(
+                    view.windowToken,
+                    InputMethodManager.HIDE_NOT_ALWAYS
+                )
             mBinding.chatActivityClMore.visibility = View.GONE
 
             false
@@ -160,7 +172,7 @@ class ChatActivity : AppCompatActivity() {
     private fun setStatusBar() {
         val resourceId = resources.getIdentifier("status_bar_height", "dimen", "android")
         mStatusBarHeight = resources.getDimensionPixelSize(resourceId)
-        MyLog.d(TAG,"mStatusBarHeight = $mStatusBarHeight")
+        MyLog.d(TAG, "mStatusBarHeight = $mStatusBarHeight")
         window.statusBarColor = resources.getColor(R.color.bar_color)
         StatusBarUtil.setStatusTextColor(true, this)
     }
@@ -184,36 +196,57 @@ class ChatActivity : AppCompatActivity() {
     }
 
     fun moreButtonClick(view: View) {
-        if (mBinding.chatActivityClMore.visibility == View.GONE){
-            MyLog.d(TAG,"mBinding.chatActivityClMore.visibility == View.GONE")
-            if (isKeyBoardShow){
-                MyLog.d(TAG,"isKeyBoardShow")
+        if (mBinding.chatActivityClMore.visibility == View.GONE) {
+            if (isKeyBoardShow) {
+                MyLog.d(TAG, "isKeyBoardShow")
+                setIsNeedShowMore(true)
                 imm.hideSoftInputFromWindow(
                     view.windowToken,
                     0
                 )
                 isKeyBoardShow = false
-            }else{
-                MyLog.d(TAG,"isKeyBoard NOT Show")
-
+            } else {
+                MyLog.d(TAG, "isKeyBoard NOT Show")
                 isKeyBoardShow = true
+                mBinding.chatActivityClMore.visibility = View.VISIBLE
             }
-            mBinding.chatActivityClMore.visibility = View.VISIBLE
-            MyLog.d(TAG,"mBinding.set chatActivityClMore.visibility == View.VISIBLE")
-
-        }else{
-            MyLog.d(TAG,"mBinding.chatActivityClMore.visibility == View.VISIBLE")
-
-            if (!isKeyBoardShow){
-                MyLog.d(TAG,"isKeyBoard NOT Show")
-                imm.showSoftInput(mBinding.chatActivityEt,0)
-                isKeyBoardShow = true
-            }else{
-                MyLog.d(TAG,"isKeyBoardShow")
-                isKeyBoardShow = false
+        } else {
+            mBinding.chatActivityClMore.visibility = View.GONE
+            isKeyBoardShow = if (!isKeyBoardShow) {
+                MyLog.d(TAG, "isKeyBoard NOT Show")
+                mBinding.chatActivityEt.requestFocus()
+                imm.showSoftInput(mBinding.chatActivityEt, 0)
+                true
+            } else {
+                MyLog.d(TAG, "isKeyBoardShow")
+                false
             }
         }
     }
 
+    fun setIsNeedShowMore(need: Boolean) {
+        isNeedShowMore = need
+    }
+
+    fun getIsNeedShowMore(): Boolean {
+        return isNeedShowMore
+    }
+
+    fun setIsNeedSmoothRv(need: Boolean) {
+        isNeedSmoothRv = need
+    }
+
+    fun getIsNeedSmoothRv(): Boolean {
+        return isNeedSmoothRv
+    }
+
+
+    override fun onBackPressed() {
+        if (mBinding.chatActivityClMore.visibility == View.VISIBLE) {
+            mBinding.chatActivityClMore.visibility = View.GONE
+        } else {
+            super.onBackPressed()
+        }
+    }
 
 }
