@@ -9,37 +9,80 @@ import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.RecyclerView
 import com.bai.psychedelic.psychat.R
 import com.bai.psychedelic.psychat.data.entity.ChatItemEntity
-import com.bai.psychedelic.psychat.databinding.ChatRvListItemReceiveBinding
-import com.bai.psychedelic.psychat.databinding.ChatRvListItemSendBinding
+import com.bai.psychedelic.psychat.databinding.ChatRvListItemImageReceiveBinding
+import com.bai.psychedelic.psychat.databinding.ChatRvListItemImageSendBinding
+import com.bai.psychedelic.psychat.databinding.ChatRvListItemTextReceiveBinding
+import com.bai.psychedelic.psychat.databinding.ChatRvListItemTextSendBinding
+import com.bai.psychedelic.psychat.utils.CHAT_TYPE_GET_IMAGE
+import com.bai.psychedelic.psychat.utils.CHAT_TYPE_GET_TXT
+import com.bai.psychedelic.psychat.utils.CHAT_TYPE_SEND_IMAGE
 import com.bai.psychedelic.psychat.utils.CHAT_TYPE_SEND_TXT
+import com.bumptech.glide.Glide
 
-class ChatListRvAdapter constructor(context: Context, list: ArrayList<ChatItemEntity>, variableId: Int) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ChatListRvAdapter constructor(
+    context: Context,
+    list: ArrayList<ChatItemEntity>,
+    variableId: Int
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val mContext = context
-    private var mList:ArrayList<ChatItemEntity>  = list
+    private var mList: ArrayList<ChatItemEntity> = list
     private val mVariableId = variableId
 
-    fun refreshList(list:ArrayList<ChatItemEntity>){
+    fun refreshList(list: ArrayList<ChatItemEntity>) {
         mList = list
         notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        if (viewType == CHAT_TYPE_SEND_TXT){
-            val chatRvListSendBinding = DataBindingUtil.inflate<ChatRvListItemSendBinding>(
-                LayoutInflater.from(mContext),
-                R.layout.chat_rv_list_item_send,parent,false)
-            val viewHolder = ViewHolderSendOutText(chatRvListSendBinding.root)
-            viewHolder.setBinding(chatRvListSendBinding)
-            return viewHolder
-        }else
-//            if (viewType == CHAT_TYPE_GET_TXT)
-        {
-            val chatRvListReceiveBinding = DataBindingUtil.inflate<ChatRvListItemReceiveBinding>(
-                LayoutInflater.from(mContext),
-                R.layout.chat_rv_list_item_receive,parent,false)
-            val viewHolder = ViewHolderReceiveInText(chatRvListReceiveBinding.root)
-            viewHolder.setBinding(chatRvListReceiveBinding)
-            return viewHolder
+        when (viewType) {
+            CHAT_TYPE_SEND_TXT -> {
+                val chatRvListSendBinding = DataBindingUtil.inflate<ChatRvListItemTextSendBinding>(
+                    LayoutInflater.from(mContext),
+                    R.layout.chat_rv_list_item_text_send, parent, false
+                )
+                val viewHolder = ViewHolder(chatRvListSendBinding.root)
+                viewHolder.setBinding(chatRvListSendBinding)
+                return viewHolder
+            }
+            CHAT_TYPE_GET_TXT -> {
+                val chatRvListReceiveBinding =
+                    DataBindingUtil.inflate<ChatRvListItemTextReceiveBinding>(
+                        LayoutInflater.from(mContext),
+                        R.layout.chat_rv_list_item_text_receive, parent, false
+                    )
+                val viewHolder = ViewHolder(chatRvListReceiveBinding.root)
+                viewHolder.setBinding(chatRvListReceiveBinding)
+                return viewHolder
+            }
+            CHAT_TYPE_GET_IMAGE -> {
+                val chatRvListReceiveBinding =
+                    DataBindingUtil.inflate<ChatRvListItemImageReceiveBinding>(
+                        LayoutInflater.from(mContext),
+                        R.layout.chat_rv_list_item_image_receive, parent, false
+                    )
+                val viewHolder = ViewHolder(chatRvListReceiveBinding.root)
+                viewHolder.setBinding(chatRvListReceiveBinding)
+                return viewHolder
+            }
+            CHAT_TYPE_SEND_IMAGE -> {
+                val chatRvListReceiveBinding =
+                    DataBindingUtil.inflate<ChatRvListItemImageSendBinding>(
+                        LayoutInflater.from(mContext),
+                        R.layout.chat_rv_list_item_image_send, parent, false
+                    )
+                val viewHolder = ViewHolder(chatRvListReceiveBinding.root)
+                viewHolder.setBinding(chatRvListReceiveBinding)
+                return viewHolder
+            }
+            else -> {
+                val chatRvListSendBinding = DataBindingUtil.inflate<ChatRvListItemTextSendBinding>(
+                    LayoutInflater.from(mContext),
+                    R.layout.chat_rv_list_item_text_send, parent, false
+                )
+                val viewHolder = ViewHolder(chatRvListSendBinding.root)
+                viewHolder.setBinding(chatRvListSendBinding)
+                return viewHolder
+            }
         }
     }
 
@@ -48,25 +91,31 @@ class ChatListRvAdapter constructor(context: Context, list: ArrayList<ChatItemEn
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        if (holder is ViewHolderSendOutText){
+        if (holder is ViewHolder) {
             holder.getBinding().setVariable(mVariableId, mList[position])
             holder.getBinding().executePendingBindings()
-        }else if (holder is ViewHolderReceiveInText){
-            holder .getBinding().setVariable(mVariableId, mList[position])
-            holder.getBinding().executePendingBindings()
-        }
+            when (mList[position].type) {
+                CHAT_TYPE_GET_IMAGE -> {
+                    Glide.with(mContext).load(mList[position].content)
+                        .into(
+                            (holder.getBinding() as ChatRvListItemImageReceiveBinding)
+                                .chatActivityLlReceiveImageChatContent
+                        )
+                }
+            }
 
+        }
 
 
     }
 
     override fun getItemViewType(position: Int): Int {
-        val entity = mList.get(position)
+        val entity = mList[position]
         return entity.type
     }
 
 
-    inner class ViewHolderSendOutText(itemView: View) :
+    inner class ViewHolder(itemView: View) :
         RecyclerView.ViewHolder(itemView) {
         private var binding: ViewDataBinding? = null
         fun getBinding(): ViewDataBinding {
@@ -77,14 +126,14 @@ class ChatListRvAdapter constructor(context: Context, list: ArrayList<ChatItemEn
             this.binding = binding
         }
     }
-    inner class ViewHolderReceiveInText(itemView: View) :
-        RecyclerView.ViewHolder(itemView) {
-        private var binding: ViewDataBinding? = null
-        fun getBinding(): ViewDataBinding {
-            return binding!!
-        }
-        fun setBinding(binding: ViewDataBinding) {
-            this.binding = binding
-        }
-    }
+//    inner class ViewHolderReceiveInText(itemView: View) :
+//        RecyclerView.ViewHolder(itemView) {
+//        private var binding: ViewDataBinding? = null
+//        fun getBinding(): ViewDataBinding {
+//            return binding!!
+//        }
+//        fun setBinding(binding: ViewDataBinding) {
+//            this.binding = binding
+//        }
+//    }
 }

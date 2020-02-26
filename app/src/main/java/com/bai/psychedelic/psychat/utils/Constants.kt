@@ -8,6 +8,8 @@ const val NET_READ_TIME_OUT = 30L
 /** Chat item type 聊天item类型*/
 const val CHAT_TYPE_SEND_TXT = 1
 const val CHAT_TYPE_GET_TXT = 2
+const val CHAT_TYPE_GET_IMAGE = 3
+const val CHAT_TYPE_SEND_IMAGE = 4
 
 
 /** 网络请求缓存大小 100M */

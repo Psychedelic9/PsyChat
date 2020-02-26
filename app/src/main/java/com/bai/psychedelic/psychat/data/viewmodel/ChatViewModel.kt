@@ -2,12 +2,10 @@ package com.bai.psychedelic.psychat.data.viewmodel
 
 import androidx.lifecycle.ViewModel
 import com.bai.psychedelic.psychat.data.entity.ChatItemEntity
-import com.bai.psychedelic.psychat.utils.CHAT_TYPE_GET_TXT
-import com.bai.psychedelic.psychat.utils.CHAT_TYPE_SEND_TXT
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
-import com.bai.psychedelic.psychat.utils.UserUtils
+import com.bai.psychedelic.psychat.utils.*
 import com.hyphenate.chat.*
 import java.lang.reflect.Type
 
@@ -60,7 +58,20 @@ class ChatViewModel:ViewModel(),KoinComponent {
                         mList.add(chatItemEntity)
                         return@forEach
                     }
-                    EMMessage.Type.IMAGE->{}
+                    EMMessage.Type.IMAGE->{
+                        chatItemEntity.apply {
+                            type = if (it.from ==  mEMClient.currentUser){
+                                CHAT_TYPE_SEND_IMAGE
+                            }else{
+                                CHAT_TYPE_GET_IMAGE
+                            }
+                            name = it.from
+                            content = (it.body as EMImageMessageBody).thumbnailUrl
+                            sendTime = UserUtils.changeLongTimeToDateTime(it.msgTime)
+                        }
+                        mList.add(chatItemEntity)
+                        return@forEach
+                    }
                     EMMessage.Type.VIDEO->{}
                     EMMessage.Type.LOCATION->{}
                     EMMessage.Type.VOICE->{}
