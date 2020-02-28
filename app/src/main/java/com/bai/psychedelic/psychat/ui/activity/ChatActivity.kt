@@ -24,7 +24,9 @@ import com.hyphenate.chat.EMClient
 import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.viewModel
 import android.view.inputmethod.InputMethodManager
-import java.lang.Exception
+import androidx.recyclerview.widget.GridLayoutManager
+import com.bai.psychedelic.psychat.data.entity.ChatMoreEntity
+import com.bai.psychedelic.psychat.ui.adapter.ChatMoreListRvAdapter
 
 
 class ChatActivity : AppCompatActivity() {
@@ -32,8 +34,10 @@ class ChatActivity : AppCompatActivity() {
     private lateinit var entity: WechatRvListItemEntity
     private val mViewModel: ChatViewModel by viewModel()
     private lateinit var mBinding: ActivityChatBinding
-    private lateinit var mAdapter: ChatListRvAdapter
+    private lateinit var mChatListAdapter: ChatListRvAdapter
+    private lateinit var mChatMoreAdapter:ChatMoreListRvAdapter
     private var mList = ArrayList<ChatItemEntity>()
+    private var mMoreList = ArrayList<ChatMoreEntity>()
     private lateinit var mContext: Context
     private val mEMClient: EMClient by inject()
     private lateinit var mLifecycleObserver: ChatActivityObserver
@@ -62,9 +66,15 @@ class ChatActivity : AppCompatActivity() {
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_chat)
         mBinding.model = mViewModel
         mBinding.chatActivityRv.layoutManager = LinearLayoutManager(mContext)
+        mBinding.chatActivityRvMore.layoutManager = GridLayoutManager(mContext,4)
         mList = mViewModel.getChatList()
-        mAdapter = ChatListRvAdapter(mContext, mList, BR.item)
-        mBinding.chatActivityRv.adapter = mAdapter
+        mMoreList = getMoreList()
+        mChatListAdapter = ChatListRvAdapter(mContext, mList, BR.item)
+        mChatMoreAdapter = ChatMoreListRvAdapter(mContext,mMoreList)
+        mBinding.chatActivityRv.adapter = mChatListAdapter
+        mBinding.chatActivityRvMore.adapter = mChatMoreAdapter
+
+        mBinding.chatActivityEt.requestFocus()
 
         mLifecycleObserver = ChatActivityObserver(this)
         lifecycle.addObserver(mLifecycleObserver)
@@ -73,6 +83,17 @@ class ChatActivity : AppCompatActivity() {
         setListener()
         mBinding.chatActivityRv.smoothScrollToPosition(mList.size)
 
+    }
+
+    private fun getMoreList(): java.util.ArrayList<ChatMoreEntity> {
+        val list = ArrayList<ChatMoreEntity>()
+        list.add(ChatMoreEntity("相册",R.drawable.icon_photo))
+        list.add(ChatMoreEntity("拍摄",R.drawable.icon_camera))
+        list.add(ChatMoreEntity("通话",R.drawable.icon_phone))
+        list.add(ChatMoreEntity("位置",R.drawable.icon_location))
+        list.add(ChatMoreEntity("语音",R.drawable.icon_voice))
+        list.add(ChatMoreEntity("收藏",R.drawable.icon_collection))
+        return list
     }
 
     override fun onResume() {
@@ -129,7 +150,7 @@ class ChatActivity : AppCompatActivity() {
                         TAG,
                         "mKeyBoardHeight = $mKeyBoardHeight + mStatusBarHeight = $mStatusBarHeight"
                     )
-                    mBinding.chatActivityClMore.minHeight = mKeyBoardHeight + mStatusBarHeight * 2
+                    mBinding.chatActivityClMore.minHeight = mKeyBoardHeight + mStatusBarHeight*2+50
                 }
 
                 override fun keyBoardHide(height: Int) {
@@ -180,7 +201,7 @@ class ChatActivity : AppCompatActivity() {
     fun refreshChatList() {
         mList = mViewModel.getChatList()
         MyLog.d(TAG, "refreshChatList() mList.size = ${mList.size}")
-        mAdapter.refreshList(mList)
+        mChatListAdapter.refreshList(mList)
         scrollToEnd()
     }
 

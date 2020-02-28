@@ -5,6 +5,7 @@ import com.bai.psychedelic.psychat.data.entity.ChatItemEntity
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+import com.bai.psychedelic.psychat.data.entity.ChatMoreEntity
 import com.bai.psychedelic.psychat.utils.*
 import com.hyphenate.chat.*
 import java.lang.reflect.Type
@@ -102,4 +103,5 @@ class ChatViewModel:ViewModel(),KoinComponent {
     fun getConversation():EMConversation{
         return mConversation
     }
+
 }
