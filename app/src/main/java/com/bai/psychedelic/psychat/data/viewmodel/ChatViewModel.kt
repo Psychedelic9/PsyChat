@@ -7,12 +7,13 @@ import org.koin.core.inject
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import com.bai.psychedelic.psychat.data.entity.ChatMoreEntity
 import com.bai.psychedelic.psychat.utils.*
+import com.hyphenate.EMCallBack
 import com.hyphenate.chat.*
 import java.lang.reflect.Type
 
 
 class ChatViewModel:ViewModel(),KoinComponent {
-
+    private val TAG = "ChatViewModel"
     private var mList = ArrayList<ChatItemEntity>()
     private var mConversationUserId:String = ""
     var mNickName:String = ""
@@ -71,6 +72,9 @@ class ChatViewModel:ViewModel(),KoinComponent {
                             sendTime = UserUtils.changeLongTimeToDateTime(it.msgTime)
                         }
                         mList.add(chatItemEntity)
+                        MyLog.d(TAG,"add ImageMessage url = ${chatItemEntity.content}")
+
+
                         return@forEach
                     }
                     EMMessage.Type.VIDEO->{}
@@ -85,6 +89,32 @@ class ChatViewModel:ViewModel(),KoinComponent {
     }
     fun setConversationNickName(name:String){
         mNickName = name
+    }
+
+    fun sendImageMessage(path:String){
+
+        val message = EMMessage.createImageSendMessage(path,false,mConversationUserId)
+
+        message.setMessageStatusCallback(object:EMCallBack{
+            override fun onSuccess() {
+                MyLog.d(TAG,"sendImageMessage onSuccess")
+            }
+
+            override fun onProgress(progress: Int, status: String?) {
+                MyLog.d(TAG,"sendImageMessage onProgress")
+
+            }
+
+            override fun onError(code: Int, error: String?) {
+                MyLog.d(TAG,"sendImageMessage onError code = $code error = $error")
+            }
+        })
+
+        if (mConversation.type == EMConversation.EMConversationType.GroupChat){
+            message.chatType = EMMessage.ChatType.GroupChat
+        }
+
+        mEMClient.chatManager().sendMessage(message)
     }
 
     fun sendTextMessage(content:String){

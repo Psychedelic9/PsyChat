@@ -13,10 +13,7 @@ import com.bai.psychedelic.psychat.databinding.ChatRvListItemImageReceiveBinding
 import com.bai.psychedelic.psychat.databinding.ChatRvListItemImageSendBinding
 import com.bai.psychedelic.psychat.databinding.ChatRvListItemTextReceiveBinding
 import com.bai.psychedelic.psychat.databinding.ChatRvListItemTextSendBinding
-import com.bai.psychedelic.psychat.utils.CHAT_TYPE_GET_IMAGE
-import com.bai.psychedelic.psychat.utils.CHAT_TYPE_GET_TXT
-import com.bai.psychedelic.psychat.utils.CHAT_TYPE_SEND_IMAGE
-import com.bai.psychedelic.psychat.utils.CHAT_TYPE_SEND_TXT
+import com.bai.psychedelic.psychat.utils.*
 import com.bumptech.glide.Glide
 
 class ChatListRvAdapter constructor(
@@ -27,7 +24,7 @@ class ChatListRvAdapter constructor(
     private val mContext = context
     private var mList: ArrayList<ChatItemEntity> = list
     private val mVariableId = variableId
-
+    private val TAG = "ChatListRvAdapter"
     fun refreshList(list: ArrayList<ChatItemEntity>) {
         mList = list
         notifyDataSetChanged()
@@ -96,6 +93,7 @@ class ChatListRvAdapter constructor(
             holder.getBinding().executePendingBindings()
             when (mList[position].type) {
                 CHAT_TYPE_GET_IMAGE -> {
+                    MyLog.d(TAG,"onBindViewHolder Image url = ${mList[position].content}")
                     Glide.with(mContext).load(mList[position].content)
                         .into(
                             (holder.getBinding() as ChatRvListItemImageReceiveBinding)

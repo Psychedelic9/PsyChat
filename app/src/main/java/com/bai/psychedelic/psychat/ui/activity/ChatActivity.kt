@@ -3,6 +3,8 @@ package com.bai.psychedelic.psychat.ui.activity
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.database.Cursor
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MotionEvent
@@ -11,7 +13,6 @@ import androidx.core.widget.addTextChangedListener
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bai.psychedelic.psychat.BR
-import com.bai.psychedelic.psychat.R
 import com.bai.psychedelic.psychat.data.entity.ChatItemEntity
 import com.bai.psychedelic.psychat.data.entity.WechatRvListItemEntity
 import com.bai.psychedelic.psychat.data.viewmodel.ChatViewModel
@@ -27,6 +28,13 @@ import android.view.inputmethod.InputMethodManager
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bai.psychedelic.psychat.data.entity.ChatMoreEntity
 import com.bai.psychedelic.psychat.ui.adapter.ChatMoreListRvAdapter
+import android.provider.MediaStore
+import android.content.ContentUris
+import android.provider.DocumentsContract
+import android.view.Gravity
+import android.widget.Toast
+import com.bai.psychedelic.psychat.R
+import java.io.File
 
 
 class ChatActivity : AppCompatActivity() {
@@ -35,7 +43,7 @@ class ChatActivity : AppCompatActivity() {
     private val mViewModel: ChatViewModel by viewModel()
     private lateinit var mBinding: ActivityChatBinding
     private lateinit var mChatListAdapter: ChatListRvAdapter
-    private lateinit var mChatMoreAdapter:ChatMoreListRvAdapter
+    private lateinit var mChatMoreAdapter: ChatMoreListRvAdapter
     private var mList = ArrayList<ChatItemEntity>()
     private var mMoreList = ArrayList<ChatMoreEntity>()
     private lateinit var mContext: Context
@@ -66,11 +74,11 @@ class ChatActivity : AppCompatActivity() {
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_chat)
         mBinding.model = mViewModel
         mBinding.chatActivityRv.layoutManager = LinearLayoutManager(mContext)
-        mBinding.chatActivityRvMore.layoutManager = GridLayoutManager(mContext,4)
+        mBinding.chatActivityRvMore.layoutManager = GridLayoutManager(mContext, 4)
         mList = mViewModel.getChatList()
         mMoreList = getMoreList()
         mChatListAdapter = ChatListRvAdapter(mContext, mList, BR.item)
-        mChatMoreAdapter = ChatMoreListRvAdapter(mContext,mMoreList)
+        mChatMoreAdapter = ChatMoreListRvAdapter(this, mMoreList)
         mBinding.chatActivityRv.adapter = mChatListAdapter
         mBinding.chatActivityRvMore.adapter = mChatMoreAdapter
 
@@ -87,12 +95,12 @@ class ChatActivity : AppCompatActivity() {
 
     private fun getMoreList(): java.util.ArrayList<ChatMoreEntity> {
         val list = ArrayList<ChatMoreEntity>()
-        list.add(ChatMoreEntity("相册",R.drawable.icon_photo))
-        list.add(ChatMoreEntity("拍摄",R.drawable.icon_camera))
-        list.add(ChatMoreEntity("通话",R.drawable.icon_phone))
-        list.add(ChatMoreEntity("位置",R.drawable.icon_location))
-        list.add(ChatMoreEntity("语音",R.drawable.icon_voice))
-        list.add(ChatMoreEntity("收藏",R.drawable.icon_collection))
+        list.add(ChatMoreEntity("相册", R.drawable.icon_photo))
+        list.add(ChatMoreEntity("拍摄", R.drawable.icon_camera))
+        list.add(ChatMoreEntity("通话", R.drawable.icon_phone))
+        list.add(ChatMoreEntity("位置", R.drawable.icon_location))
+        list.add(ChatMoreEntity("语音", R.drawable.icon_voice))
+        list.add(ChatMoreEntity("收藏", R.drawable.icon_collection))
         return list
     }
 
@@ -150,7 +158,8 @@ class ChatActivity : AppCompatActivity() {
                         TAG,
                         "mKeyBoardHeight = $mKeyBoardHeight + mStatusBarHeight = $mStatusBarHeight"
                     )
-                    mBinding.chatActivityClMore.minHeight = mKeyBoardHeight + mStatusBarHeight*2+50
+                    mBinding.chatActivityClMore.minHeight =
+                        mKeyBoardHeight + mStatusBarHeight * 2 + 50
                 }
 
                 override fun keyBoardHide(height: Int) {
@@ -268,6 +277,96 @@ class ChatActivity : AppCompatActivity() {
         } else {
             super.onBackPressed()
         }
+    }
+
+    private fun getImagePath(uri: Uri, selection: String): String {
+        var path: String = ""
+        //通过uri和selection来获取真实的图片路径
+        val cursor: Cursor? = if ("" == selection) {
+            contentResolver.query(uri, null, null, null, null)!!
+        } else {
+            contentResolver.query(uri, null, selection, null, null)!!
+        }
+        if (cursor!!.moveToFirst()) {
+            path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA))
+        }
+        cursor.close()
+        return path
+    }
+
+    protected fun sendPicByUri(selectedImage: Uri) {
+        val filePathColumn = arrayOf(MediaStore.Images.Media.DATA)
+        var cursor = contentResolver
+            .query(selectedImage, filePathColumn, null, null, null)
+        if (cursor != null) {
+            cursor.moveToFirst()
+            val columnIndex = cursor!!.getColumnIndex(filePathColumn[0])
+            val picturePath = cursor!!.getString(columnIndex)
+            cursor.close()
+            cursor = null
+
+            if (picturePath == null || picturePath == "null") {
+                val toast =
+                    Toast.makeText(mContext, R.string.cant_find_pictures, Toast.LENGTH_SHORT)
+                toast.setGravity(Gravity.CENTER, 0, 0)
+                toast.show()
+                return
+            }
+            MyLog.d(TAG, "start sendImageMessage $picturePath")
+            mViewModel.sendImageMessage(picturePath.toString())
+            MyLog.d(TAG, "sendImageMessage $picturePath")
+        } else {
+            val file = File(selectedImage.path!!)
+            if (!file.exists()) {
+                val toast =
+                    Toast.makeText(mContext, R.string.cant_find_pictures, Toast.LENGTH_SHORT)
+                toast.setGravity(Gravity.CENTER, 0, 0)
+                toast.show()
+                return
+
+            }
+            mViewModel.sendImageMessage(file.absolutePath.toString())
+            MyLog.d(TAG, "sendImageMessage ${file.absolutePath}")
+        }
+
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+
+        if (requestCode == START_ACTIVITY_IMAGE && resultCode == RESULT_OK && null != data) {
+//            var imagePath: String? = null
+            val uri = data.data
+            if (uri!=null){
+                sendPicByUri(uri)
+            }
+//            if (DocumentsContract.isDocumentUri(this, uri)) {
+//                //如果是document类型的uri，则通过document id处理
+//                val docId = DocumentsContract.getDocumentId(uri)
+//                if ("com.android.providers.media.documents" == uri?.authority) {
+//                    val id =
+//                        docId.split(":".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[1]
+//                    val selection = MediaStore.Images.Media._ID + "=" + id
+//                    imagePath =
+//                        getImagePath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, selection)
+//                } else if ("com.android.providers.downloads.documents" == uri?.authority) {
+//                    val contentUri = ContentUris.withAppendedId(
+//                        Uri.parse("content:" + "//downloads/public_downloads"),
+//                        java.lang.Long.valueOf(docId)
+//                    )
+//                    imagePath = getImagePath(contentUri, "")
+//                }
+//            } else if ("content".equals(uri?.scheme!!, ignoreCase = true)) {
+//                //如果是content类型的uri，则使用普通方式处理
+//                imagePath = getImagePath(uri, "")
+//            } else if ("file".equals(uri.scheme!!, ignoreCase = true)) {
+//                //如果是File类型的uri，直接获取图片路径即可
+//                imagePath = uri.path
+//            }
+
+
+        }
+        super.onActivityResult(requestCode, resultCode, data)
+
     }
 
 }

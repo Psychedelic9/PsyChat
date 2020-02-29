@@ -11,6 +11,13 @@ const val CHAT_TYPE_GET_TXT = 2
 const val CHAT_TYPE_GET_IMAGE = 3
 const val CHAT_TYPE_SEND_IMAGE = 4
 
+/** 动态运行权限*/
+
+const val REQUEST_PERMISSIONS = 777
+
+/** Activity result code*/
+const val START_ACTIVITY_IMAGE = 999 //打开图库
+
 
 /** 网络请求缓存大小 100M */
 const val NET_CACHE_SIZE = 1024L * 1024L * 100L

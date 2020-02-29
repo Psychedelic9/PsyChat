@@ -1,6 +1,7 @@
 package com.bai.psychedelic.psychat.ui.adapter
 
-import android.content.Context
+import android.content.Intent
+import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,13 +11,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bai.psychedelic.psychat.R
 import com.bai.psychedelic.psychat.data.entity.ChatMoreEntity
 import com.bai.psychedelic.psychat.databinding.ChatMoreRvItemBinding
+import com.bai.psychedelic.psychat.ui.activity.ChatActivity
+import com.bai.psychedelic.psychat.utils.START_ACTIVITY_IMAGE
 
 class ChatMoreListRvAdapter constructor(
-    context: Context,
+    context: ChatActivity,
     list: ArrayList<ChatMoreEntity>
 ): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var mList:ArrayList<ChatMoreEntity> = list
-    private var mContext:Context = context
+    private var mContext:ChatActivity = context
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val binding = DataBindingUtil.inflate<ChatMoreRvItemBinding>(
@@ -35,9 +38,23 @@ class ChatMoreListRvAdapter constructor(
         if (holder is ViewHolder){
             (holder.getBinding() as ChatMoreRvItemBinding).chatMoreTv.text = mList[position].text
             (holder.getBinding() as ChatMoreRvItemBinding).chatMoreIv.setImageResource(mList[position].sourceId)
+            when(mList[position].sourceId){
+                R.drawable.icon_photo->{
+                    (holder.getBinding() as ChatMoreRvItemBinding).chatMoreCl.setOnClickListener {
+                        mContext.startActivityForResult(selectPicture(),START_ACTIVITY_IMAGE)
+                    }
+                }
+            }
         }
     }
 
+    //调用系统图库选择图片
+    fun selectPicture(): Intent {
+        return Intent(
+            Intent.ACTION_PICK,
+            MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+        )
+    }
 
     inner class ViewHolder(itemView: View) :
         RecyclerView.ViewHolder(itemView) {

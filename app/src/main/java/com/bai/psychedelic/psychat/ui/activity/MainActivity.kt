@@ -2,10 +2,12 @@ package com.bai.psychedelic.psychat.ui.activity
 
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.viewpager.widget.ViewPager
 import com.bai.psychedelic.psychat.R
@@ -14,7 +16,7 @@ import com.bai.psychedelic.psychat.data.viewmodel.MainViewModel
 import com.bai.psychedelic.psychat.databinding.ActivityMainBinding
 import com.bai.psychedelic.psychat.observer.lifecycleObserver.MainActivityObserver
 import com.bai.psychedelic.psychat.ui.custom.BottonIcon
-import com.bai.psychedelic.psychat.utils.StatusBarUtil
+import com.bai.psychedelic.psychat.utils.*
 import com.hyphenate.chat.EMClient
 import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.viewModel
@@ -124,5 +126,18 @@ class MainActivity : AppCompatActivity() {
         AddFriendsActivity.actionStart(mContext)
     }
 
-
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+       if (requestCode == REQUEST_PERMISSIONS){
+           for ((index,permission) in permissions.withIndex()){
+               if (grantResults[index] != PackageManager.PERMISSION_GRANTED){
+                   Toast.makeText(mContext,"不获取 $permission 程序无法正常运行，请授权",Toast.LENGTH_LONG).show()
+               }
+           }
+       }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
 }
