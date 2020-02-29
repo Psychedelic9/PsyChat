@@ -19,3 +19,8 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+-keep class com.hyphenate.** {*;}
+-dontwarn  com.hyphenate.**
+-keep class internal.org.apache.http.entity.** {*;}
+-keep class com.superrtc.** {*;}
+-dontwarn  com.superrtc.**

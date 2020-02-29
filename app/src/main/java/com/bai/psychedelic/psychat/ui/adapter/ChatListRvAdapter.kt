@@ -93,11 +93,19 @@ class ChatListRvAdapter constructor(
             holder.getBinding().executePendingBindings()
             when (mList[position].type) {
                 CHAT_TYPE_GET_IMAGE -> {
-                    MyLog.d(TAG,"onBindViewHolder Image url = ${mList[position].content}")
+                    MyLog.d(TAG,"onBindViewHolder get Image url = ${mList[position].content}")
                     Glide.with(mContext).load(mList[position].content)
                         .into(
                             (holder.getBinding() as ChatRvListItemImageReceiveBinding)
-                                .chatActivityLlReceiveImageChatContent
+                                .chatActivityIvReceiveImageChatContent
+                        )
+                }
+                CHAT_TYPE_SEND_IMAGE ->{
+                    MyLog.d(TAG,"onBindViewHolder send Image url = ${mList[position].content}")
+                    Glide.with(mContext).load(mList[position].content)
+                        .into(
+                            (holder.getBinding() as ChatRvListItemImageSendBinding)
+                                .chatActivityIvSendImageChatContent
                         )
                 }
             }

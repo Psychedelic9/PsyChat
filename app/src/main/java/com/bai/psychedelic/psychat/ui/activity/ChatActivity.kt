@@ -37,7 +37,7 @@ import com.bai.psychedelic.psychat.R
 import java.io.File
 
 
-class ChatActivity : AppCompatActivity() {
+open class ChatActivity : AppCompatActivity() {
     private val TAG = "ChatActivity"
     private lateinit var entity: WechatRvListItemEntity
     private val mViewModel: ChatViewModel by viewModel()
@@ -294,7 +294,7 @@ class ChatActivity : AppCompatActivity() {
         return path
     }
 
-    protected fun sendPicByUri(selectedImage: Uri) {
+    private fun sendPicByUri(selectedImage: Uri) {
         val filePathColumn = arrayOf(MediaStore.Images.Media.DATA)
         var cursor = contentResolver
             .query(selectedImage, filePathColumn, null, null, null)
@@ -339,31 +339,6 @@ class ChatActivity : AppCompatActivity() {
             if (uri!=null){
                 sendPicByUri(uri)
             }
-//            if (DocumentsContract.isDocumentUri(this, uri)) {
-//                //如果是document类型的uri，则通过document id处理
-//                val docId = DocumentsContract.getDocumentId(uri)
-//                if ("com.android.providers.media.documents" == uri?.authority) {
-//                    val id =
-//                        docId.split(":".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[1]
-//                    val selection = MediaStore.Images.Media._ID + "=" + id
-//                    imagePath =
-//                        getImagePath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, selection)
-//                } else if ("com.android.providers.downloads.documents" == uri?.authority) {
-//                    val contentUri = ContentUris.withAppendedId(
-//                        Uri.parse("content:" + "//downloads/public_downloads"),
-//                        java.lang.Long.valueOf(docId)
-//                    )
-//                    imagePath = getImagePath(contentUri, "")
-//                }
-//            } else if ("content".equals(uri?.scheme!!, ignoreCase = true)) {
-//                //如果是content类型的uri，则使用普通方式处理
-//                imagePath = getImagePath(uri, "")
-//            } else if ("file".equals(uri.scheme!!, ignoreCase = true)) {
-//                //如果是File类型的uri，直接获取图片路径即可
-//                imagePath = uri.path
-//            }
-
-
         }
         super.onActivityResult(requestCode, resultCode, data)
 
