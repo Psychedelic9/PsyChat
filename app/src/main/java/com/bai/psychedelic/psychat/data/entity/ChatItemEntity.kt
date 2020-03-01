@@ -6,7 +6,9 @@ open class ChatItemEntity(
     var name:String = "",
     var content:String = "",
     var type:Int = 0,
-    var sendTime:String = ""
+    var sendTime:String = "",
+    var height:Int = 0,
+    var width:Int = 0
 )
 {
 

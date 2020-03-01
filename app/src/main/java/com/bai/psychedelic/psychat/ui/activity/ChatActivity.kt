@@ -279,20 +279,6 @@ open class ChatActivity : AppCompatActivity() {
         }
     }
 
-    private fun getImagePath(uri: Uri, selection: String): String {
-        var path: String = ""
-        //通过uri和selection来获取真实的图片路径
-        val cursor: Cursor? = if ("" == selection) {
-            contentResolver.query(uri, null, null, null, null)!!
-        } else {
-            contentResolver.query(uri, null, selection, null, null)!!
-        }
-        if (cursor!!.moveToFirst()) {
-            path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA))
-        }
-        cursor.close()
-        return path
-    }
 
     private fun sendPicByUri(selectedImage: Uri) {
         val filePathColumn = arrayOf(MediaStore.Images.Media.DATA)
@@ -300,8 +286,8 @@ open class ChatActivity : AppCompatActivity() {
             .query(selectedImage, filePathColumn, null, null, null)
         if (cursor != null) {
             cursor.moveToFirst()
-            val columnIndex = cursor!!.getColumnIndex(filePathColumn[0])
-            val picturePath = cursor!!.getString(columnIndex)
+            val columnIndex = cursor.getColumnIndex(filePathColumn[0])
+            val picturePath = cursor.getString(columnIndex)
             cursor.close()
             cursor = null
 

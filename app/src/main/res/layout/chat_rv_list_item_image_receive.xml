@@ -50,7 +50,7 @@
             >
             <ImageView
                 android:id="@+id/chat_activity_iv_receive_image_chat_content"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:minHeight="43dp"
                 android:gravity="center_vertical"

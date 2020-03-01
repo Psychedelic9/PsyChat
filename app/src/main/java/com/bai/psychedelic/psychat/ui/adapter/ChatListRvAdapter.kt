@@ -93,16 +93,32 @@ class ChatListRvAdapter constructor(
             holder.getBinding().executePendingBindings()
             when (mList[position].type) {
                 CHAT_TYPE_GET_IMAGE -> {
-                    MyLog.d(TAG,"onBindViewHolder get Image url = ${mList[position].content}")
+                    MyLog.d(TAG, "onBindViewHolder get Image url = ${mList[position].content}")
+                    val layoutParams =
+                        (holder.getBinding() as ChatRvListItemImageReceiveBinding)
+                            .chatActivityIvReceiveImageChatContent.layoutParams
+                    layoutParams.width = (mList[position].width)
+                    layoutParams.height = (mList[position].height)
+                    (holder.getBinding() as ChatRvListItemImageReceiveBinding)
+                        .chatActivityIvReceiveImageChatContent.layoutParams = layoutParams
                     Glide.with(mContext).load(mList[position].content)
+                        .override((mList[position].width), (mList[position].height))
                         .into(
                             (holder.getBinding() as ChatRvListItemImageReceiveBinding)
                                 .chatActivityIvReceiveImageChatContent
                         )
                 }
-                CHAT_TYPE_SEND_IMAGE ->{
-                    MyLog.d(TAG,"onBindViewHolder send Image url = ${mList[position].content}")
+                CHAT_TYPE_SEND_IMAGE -> {
+                    MyLog.d(TAG, "onBindViewHolder send Image url = ${mList[position].content}")
+                    val layoutParams =
+                        (holder.getBinding() as ChatRvListItemImageSendBinding)
+                            .chatActivityIvSendImageChatContent.layoutParams
+                    layoutParams.width = (mList[position].width)
+                    layoutParams.height = (mList[position].height)
+                    (holder.getBinding() as ChatRvListItemImageSendBinding)
+                        .chatActivityIvSendImageChatContent.layoutParams = layoutParams
                     Glide.with(mContext).load(mList[position].content)
+                        .override((mList[position].width), (mList[position].height))
                         .into(
                             (holder.getBinding() as ChatRvListItemImageSendBinding)
                                 .chatActivityIvSendImageChatContent
