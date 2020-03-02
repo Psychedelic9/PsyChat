@@ -1,6 +1,7 @@
 package com.bai.psychedelic.psychat.ui.adapter
 
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +14,7 @@ import com.bai.psychedelic.psychat.databinding.ChatRvListItemImageReceiveBinding
 import com.bai.psychedelic.psychat.databinding.ChatRvListItemImageSendBinding
 import com.bai.psychedelic.psychat.databinding.ChatRvListItemTextReceiveBinding
 import com.bai.psychedelic.psychat.databinding.ChatRvListItemTextSendBinding
+import com.bai.psychedelic.psychat.ui.activity.ImageFullScreenActivity
 import com.bai.psychedelic.psychat.utils.*
 import com.bumptech.glide.Glide
 
@@ -107,6 +109,13 @@ class ChatListRvAdapter constructor(
                             (holder.getBinding() as ChatRvListItemImageReceiveBinding)
                                 .chatActivityIvReceiveImageChatContent
                         )
+                    (holder.getBinding() as ChatRvListItemImageReceiveBinding)
+                        .chatActivityIvReceiveImageChatContent.setOnClickListener {
+                        val intent = Intent(mContext,ImageFullScreenActivity::class.java)
+                        intent.putExtra(PICURLFROMTHUMBNAIL,mList[position].content)
+                        mContext.startActivity(intent)
+                    }
+                    return
                 }
                 CHAT_TYPE_SEND_IMAGE -> {
                     MyLog.d(TAG, "onBindViewHolder send Image url = ${mList[position].content}")
@@ -123,6 +132,13 @@ class ChatListRvAdapter constructor(
                             (holder.getBinding() as ChatRvListItemImageSendBinding)
                                 .chatActivityIvSendImageChatContent
                         )
+                    (holder.getBinding() as ChatRvListItemImageSendBinding)
+                        .chatActivityIvSendImageChatContent.setOnClickListener {
+                        val intent = Intent(mContext,ImageFullScreenActivity::class.java)
+                        intent.putExtra(PICURLFROMTHUMBNAIL,mList[position].content)
+                        mContext.startActivity(intent)
+                    }
+                    return
                 }
             }
 

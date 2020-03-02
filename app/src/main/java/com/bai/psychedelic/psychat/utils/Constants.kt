@@ -35,3 +35,6 @@ const val SP_KEYBOARD_HEIGHT = "sp_keyboard_height"
 
 /** 会话ID */
 const val CONVERSATION_USER_ID = "conversation_user_id"
+
+/** intent Extra*/
+const val PICURLFROMTHUMBNAIL = "picUrlFromThumbnail"

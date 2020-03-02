@@ -1,6 +1,6 @@
 package com.bai.psychedelic.psychat.data.entity
 
 class ContactListItemEntity(
-    var id: Long = 0,
+    var id: String = "",
     var icon: String = ""
 )

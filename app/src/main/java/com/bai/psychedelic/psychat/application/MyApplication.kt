@@ -80,7 +80,7 @@ class MyApplication : Application() {
         var processName: String? = null
         val am: ActivityManager =
             this.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-        val l: List<*> = am.getRunningAppProcesses()
+        val l: List<*> = am.runningAppProcesses
         val i = l.iterator()
         val pm: PackageManager = this.packageManager
         while (i.hasNext()) {

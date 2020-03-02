@@ -29,7 +29,7 @@
             app:layout_constraintTop_toTopOf="@+id/contact_list_rv_list_item_icon"
             app:layout_constraintBottom_toBottomOf="@+id/contact_list_rv_list_item_icon"
             app:layout_constraintRight_toRightOf="parent"
-            android:text="新的朋友"
+            android:text="@{contactListItem.id}"
             android:textSize="22sp"
             android:gravity="center_vertical"
             android:layout_marginStart="10dp"
