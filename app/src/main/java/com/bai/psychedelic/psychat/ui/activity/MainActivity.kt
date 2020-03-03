@@ -134,7 +134,8 @@ class MainActivity : AppCompatActivity() {
        if (requestCode == REQUEST_PERMISSIONS){
            for ((index,permission) in permissions.withIndex()){
                if (grantResults[index] != PackageManager.PERMISSION_GRANTED){
-                   Toast.makeText(mContext,"不获取 $permission 程序无法正常运行，请授权",Toast.LENGTH_LONG).show()
+                   MyLog.d("MainActivity","permission = $permission grantResults[index] = ${grantResults[index]}")
+//                   Toast.makeText(mContext,"不获取 $permission 程序无法正常运行，请授权",Toast.LENGTH_LONG).show()
                }
            }
        }

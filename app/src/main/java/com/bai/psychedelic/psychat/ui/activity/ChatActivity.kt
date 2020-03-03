@@ -73,7 +73,9 @@ open class ChatActivity : AppCompatActivity() {
         }
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_chat)
         mBinding.model = mViewModel
-        mBinding.chatActivityRv.layoutManager = LinearLayoutManager(mContext)
+        val linearLayoutManager = LinearLayoutManager(mContext)
+        linearLayoutManager.stackFromEnd = true
+        mBinding.chatActivityRv.layoutManager = linearLayoutManager
         mBinding.chatActivityRvMore.layoutManager = GridLayoutManager(mContext, 4)
         mList = mViewModel.getChatList()
         mMoreList = getMoreList()
@@ -82,13 +84,15 @@ open class ChatActivity : AppCompatActivity() {
         mBinding.chatActivityRv.adapter = mChatListAdapter
         mBinding.chatActivityRvMore.adapter = mChatMoreAdapter
 
-        mBinding.chatActivityEt.requestFocus()
+        //弹出键盘
+//        mBinding.chatActivityEt.requestFocus()
 
         mLifecycleObserver = ChatActivityObserver(this)
         lifecycle.addObserver(mLifecycleObserver)
         imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         setStatusBar()
         setListener()
+        //只滑动初始化会有动画，只是用LinearLayoutManager的逆序排列不能滑动到最后一条
         mBinding.chatActivityRv.smoothScrollToPosition(mList.size)
 
     }
@@ -217,7 +221,8 @@ open class ChatActivity : AppCompatActivity() {
     fun sendMessageButtonClick(view: View) {
         mViewModel.sendTextMessage(mBinding.chatActivityEt.text.toString())
         refreshChatList()
-        mBinding.chatActivityRv.smoothScrollToPosition(mList.size)
+//        mBinding.chatActivityRv.smoothScrollToPosition(mList.size)
+        scrollToEnd()
         mBinding.chatActivityEt.setText("")
     }
 
