@@ -13,7 +13,7 @@
         android:fitsSystemWindows="true"
         android:background="@color/black"
         tools:context=".ui.activity.ImageFullScreenActivity">
-        <ImageView
+        <com.bai.psychedelic.psychat.ui.custom.ZoomImageView
             android:id="@+id/activity_image_full_screen_iv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
