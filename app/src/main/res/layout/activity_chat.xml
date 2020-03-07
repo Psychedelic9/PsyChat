@@ -102,6 +102,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginStart="10dp"
                     android:layout_weight="1"
+                    android:onClick="voiceTextSwitch"
                     android:src="@drawable/chatting_setmode_voice_btn" />
 
                 <LinearLayout
@@ -122,7 +123,18 @@
                         android:layout_gravity="center_vertical"
                         android:layout_marginStart="10dp"
                         android:background="@null"
+                        android:visibility="visible"
                         android:maxLines="4" />
+                    <com.bai.psychedelic.psychat.ui.custom.RecordButton
+                        android:id="@+id/chat_activity_record_button"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center_vertical"
+                        android:gravity="center"
+                        android:visibility="gone"
+                        android:background="@drawable/chat_press_speak_btn"
+                        android:text="@string/press_speak"/>
+
                 </LinearLayout>
 
                 <ImageView

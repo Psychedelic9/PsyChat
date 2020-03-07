@@ -23,10 +23,13 @@ class ChatListRvAdapter constructor(
     list: ArrayList<ChatItemEntity>,
     variableId: Int
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    companion object{
+        private const val TAG = "ChatListRvAdapter"
+    }
     private val mContext = context
     private var mList: ArrayList<ChatItemEntity> = list
     private val mVariableId = variableId
-    private val TAG = "ChatListRvAdapter"
+
     fun refreshList(list: ArrayList<ChatItemEntity>) {
         mList = list
         notifyDataSetChanged()
@@ -164,14 +167,4 @@ class ChatListRvAdapter constructor(
             this.binding = binding
         }
     }
-//    inner class ViewHolderReceiveInText(itemView: View) :
-//        RecyclerView.ViewHolder(itemView) {
-//        private var binding: ViewDataBinding? = null
-//        fun getBinding(): ViewDataBinding {
-//            return binding!!
-//        }
-//        fun setBinding(binding: ViewDataBinding) {
-//            this.binding = binding
-//        }
-//    }
 }

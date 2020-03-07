@@ -145,6 +145,14 @@ class ChatViewModel : ViewModel(), KoinComponent {
         mEMClient.chatManager().sendMessage(message)
     }
 
+    fun sendVoiceMessage(voiceFilePath: String, voiceTimeLength: Int) {
+        val message = EMMessage.createVoiceSendMessage(voiceFilePath,voiceTimeLength,mConversationUserId)
+        if (mConversation.type == EMConversation.EMConversationType.GroupChat) {
+            message.chatType = EMMessage.ChatType.GroupChat
+        }
+        mEMClient.chatManager().sendMessage(message)
+    }
+
     fun setConversationUserId(id: String) {
         this.mConversationUserId = id
         mConversation = mEMClient.chatManager().getConversation(mConversationUserId)
@@ -153,5 +161,7 @@ class ChatViewModel : ViewModel(), KoinComponent {
     fun getConversation(): EMConversation {
         return mConversation
     }
+
+
 
 }

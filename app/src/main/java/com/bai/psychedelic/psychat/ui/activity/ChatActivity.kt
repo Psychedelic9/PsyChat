@@ -34,20 +34,23 @@ import android.provider.DocumentsContract
 import android.view.Gravity
 import android.widget.Toast
 import com.bai.psychedelic.psychat.R
+import com.bai.psychedelic.psychat.ui.custom.RecordButton
 import java.io.File
+import java.util.concurrent.ExecutorService
 
 
 open class ChatActivity : AppCompatActivity() {
     private val TAG = "ChatActivity"
     private lateinit var entity: WechatRvListItemEntity
     private val mViewModel: ChatViewModel by viewModel()
+    private val mEMClient: EMClient by inject()
+    private val mSingleExecutor: ExecutorService by inject()
     private lateinit var mBinding: ActivityChatBinding
     private lateinit var mChatListAdapter: ChatListRvAdapter
     private lateinit var mChatMoreAdapter: ChatMoreListRvAdapter
     private var mList = ArrayList<ChatItemEntity>()
     private var mMoreList = ArrayList<ChatMoreEntity>()
     private lateinit var mContext: Context
-    private val mEMClient: EMClient by inject()
     private lateinit var mLifecycleObserver: ChatActivityObserver
     private lateinit var imm: InputMethodManager
     private var mKeyBoardHeight = 0
@@ -195,6 +198,12 @@ open class ChatActivity : AppCompatActivity() {
 
             false
         }
+        mBinding.chatActivityRecordButton.setVoiceRecorderCallback(object:RecordButton.VoiceRecorderCallback{
+            override fun onVoiceRecordComplete(voiceFilePath: String, voiceTimeLength: Int) {
+                mViewModel.sendVoiceMessage(voiceFilePath,voiceTimeLength)
+            }
+
+        })
     }
 
     private fun scrollToEnd() {
@@ -221,8 +230,8 @@ open class ChatActivity : AppCompatActivity() {
     fun sendMessageButtonClick(view: View) {
         mViewModel.sendTextMessage(mBinding.chatActivityEt.text.toString())
         refreshChatList()
-//        mBinding.chatActivityRv.smoothScrollToPosition(mList.size)
-        scrollToEnd()
+        mBinding.chatActivityRv.smoothScrollToPosition(mList.size)
+//        scrollToEnd()
         mBinding.chatActivityEt.setText("")
     }
 
@@ -333,6 +342,37 @@ open class ChatActivity : AppCompatActivity() {
         }
         super.onActivityResult(requestCode, resultCode, data)
 
+    }
+    @Volatile
+    private var abortQuickClick = false
+    fun voiceTextSwitch(view: View) {
+        //500ms延时操作防止快速点击
+        if (!abortQuickClick){
+            if (mBinding.chatActivityEt.visibility == View.VISIBLE){
+                mBinding.chatActivityEt.visibility = View.GONE
+                mBinding.chatActivityRecordButton.visibility = View.VISIBLE
+                mBinding.chatActivityIvButtonSwitch.setImageResource(R.drawable.chatting_setmode_keyboard_btn)
+                if ( mBinding.chatActivityIvButtonSend.visibility == View.VISIBLE){
+                    mBinding.chatActivityIvButtonSend.visibility = View.GONE
+                    mBinding.chatActivityIvButtonMore.visibility = View.VISIBLE
+                }
+            }else{
+                mBinding.chatActivityEt.visibility = View.VISIBLE
+                mBinding.chatActivityRecordButton.visibility = View.GONE
+                mBinding.chatActivityRecordButton.visibility = View.GONE
+                mBinding.chatActivityIvButtonSwitch.setImageResource(R.drawable.chatting_setmode_voice_btn)
+                if (mBinding.chatActivityEt.text.isNotEmpty()){
+                    mBinding.chatActivityIvButtonSend.visibility = View.VISIBLE
+                    mBinding.chatActivityIvButtonMore.visibility = View.GONE
+                }
+
+            }
+            mSingleExecutor.submit {
+                abortQuickClick = true
+                Thread.sleep(500)
+                abortQuickClick = false
+            }
+        }
     }
 
 }
