@@ -47,7 +47,6 @@ class ChatVoicePlayer private constructor(cxt: Context) {
 
     fun play(msg: EMMessage, listener: MediaPlayer.OnCompletionListener) {
         if (msg.body !is EMVoiceMessageBody) return
-
         if (player.isPlaying) {
             stop()
         }
@@ -62,7 +61,6 @@ class ChatVoicePlayer private constructor(cxt: Context) {
             player.prepare()
             player.setOnCompletionListener {
                 stop()
-
                 currentPlayingId = null
                 onCompletionListener = null
             }
@@ -101,7 +99,7 @@ class ChatVoicePlayer private constructor(cxt: Context) {
         if (true) {
             audioManager.mode = AudioManager.MODE_NORMAL
             audioManager.isSpeakerphoneOn = true
-            player.setAudioStreamType(AudioManager.STREAM_RING)
+            player.setAudioStreamType(AudioManager.STREAM_MUSIC)
         } else {
             audioManager.isSpeakerphoneOn = false// 关闭扬声器
             // 把声音设定成Earpiece（听筒）出来，设定为正在通话中

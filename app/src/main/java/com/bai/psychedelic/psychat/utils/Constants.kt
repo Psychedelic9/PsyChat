@@ -7,9 +7,11 @@ const val NET_READ_TIME_OUT = 30L
 
 /** Chat item type 聊天item类型*/
 const val CHAT_TYPE_SEND_TXT = 1
-const val CHAT_TYPE_GET_TXT = 2
-const val CHAT_TYPE_GET_IMAGE = 3
-const val CHAT_TYPE_SEND_IMAGE = 4
+const val CHAT_TYPE_GET_TXT = CHAT_TYPE_SEND_TXT + 1
+const val CHAT_TYPE_GET_IMAGE = CHAT_TYPE_GET_TXT + 1
+const val CHAT_TYPE_SEND_IMAGE = CHAT_TYPE_GET_IMAGE + 1
+const val CHAT_TYPE_GET_VOICE = CHAT_TYPE_SEND_IMAGE + 1
+const val CHAT_TYPE_SEND_VOICE = CHAT_TYPE_GET_VOICE + 1
 
 /** 动态运行权限*/
 

@@ -14,6 +14,7 @@ import java.io.File
 import java.lang.reflect.Type
 import android.graphics.BitmapFactory
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+import com.bai.psychedelic.psychat.ui.activity.ChatActivity
 import java.io.FileInputStream
 import java.io.FileNotFoundException
 import kotlin.concurrent.thread
@@ -51,7 +52,6 @@ class ChatViewModel : ViewModel(), KoinComponent {
         mList.clear()
         messages.forEach {
             val chatItemEntity = ChatItemEntity()
-
             when (it?.type) {
                 EMMessage.Type.TXT -> {
                     chatItemEntity.apply {
@@ -95,6 +95,25 @@ class ChatViewModel : ViewModel(), KoinComponent {
                 EMMessage.Type.LOCATION -> {
                 }
                 EMMessage.Type.VOICE -> {
+                    chatItemEntity.apply {
+                        if (it.from == mEMClient.currentUser) {
+                            type = CHAT_TYPE_SEND_VOICE
+                            content = (it.body as EMVoiceMessageBody).localUrl
+                        }else{
+                            type = CHAT_TYPE_GET_VOICE
+                            content = (it.body as EMVoiceMessageBody).remoteUrl
+                        }
+                        name = it.from
+                        voiceLength = (it.body as EMVoiceMessageBody).length
+                        sendTime = UserUtils.changeLongTimeToDateTime(it.msgTime)
+                        voiceMessage = it
+                    }
+                    mList.add(chatItemEntity)
+                    MyLog.d(
+                        TAG,
+                        "add VoiceMessage url = ${chatItemEntity.content} length = ${chatItemEntity.voiceLength}"
+                    )
+                    return@forEach
                 }
                 EMMessage.Type.FILE -> {
                 }
@@ -110,12 +129,13 @@ class ChatViewModel : ViewModel(), KoinComponent {
         mNickName = name
     }
 
-    fun sendImageMessage(path: String) {
+    fun sendImageMessage(path: String,callback: ChatActivity.SendPictureCallback) {
 
         val message = EMMessage.createImageSendMessage(path, false, mConversationUserId)
 
         message.setMessageStatusCallback(object : EMCallBack {
             override fun onSuccess() {
+                callback.onSuccess()
                 MyLog.d(TAG, "sendImageMessage onSuccess")
             }
 
@@ -126,6 +146,7 @@ class ChatViewModel : ViewModel(), KoinComponent {
 
             override fun onError(code: Int, error: String?) {
                 MyLog.d(TAG, "sendImageMessage onError code = $code error = $error")
+                callback.onFailed()
             }
         })
 

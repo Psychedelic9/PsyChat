@@ -143,7 +143,7 @@ open class ChatActivity : AppCompatActivity() {
             if (bottom < oldBottom) {
                 mBinding.chatActivityRv.post {
                     if (mBinding.chatActivityRv.adapter!!.itemCount > 0) {
-                        mBinding.chatActivityRv.smoothScrollToPosition(mBinding.chatActivityRv.adapter!!.itemCount - 1)
+                        scrollToEnd()
                     }
                 }
                 MyLog.d(TAG, "height = ${oldBottom - bottom}")
@@ -201,6 +201,7 @@ open class ChatActivity : AppCompatActivity() {
         mBinding.chatActivityRecordButton.setVoiceRecorderCallback(object:RecordButton.VoiceRecorderCallback{
             override fun onVoiceRecordComplete(voiceFilePath: String, voiceTimeLength: Int) {
                 mViewModel.sendVoiceMessage(voiceFilePath,voiceTimeLength)
+                refreshChatList()
             }
 
         })
@@ -208,7 +209,7 @@ open class ChatActivity : AppCompatActivity() {
 
     private fun scrollToEnd() {
         if (mBinding.chatActivityRv.adapter!!.itemCount > 0) {
-            mBinding.chatActivityRv.smoothScrollToPosition(mBinding.chatActivityRv.adapter!!.itemCount - 1)
+            mBinding.chatActivityRv.smoothScrollToPosition(mBinding.chatActivityRv.adapter!!.itemCount)
         }
     }
 
@@ -230,8 +231,6 @@ open class ChatActivity : AppCompatActivity() {
     fun sendMessageButtonClick(view: View) {
         mViewModel.sendTextMessage(mBinding.chatActivityEt.text.toString())
         refreshChatList()
-        mBinding.chatActivityRv.smoothScrollToPosition(mList.size)
-//        scrollToEnd()
         mBinding.chatActivityEt.setText("")
     }
 
@@ -294,6 +293,7 @@ open class ChatActivity : AppCompatActivity() {
     }
 
 
+
     private fun sendPicByUri(selectedImage: Uri) {
         val filePathColumn = arrayOf(MediaStore.Images.Media.DATA)
         var cursor = contentResolver
@@ -313,7 +313,16 @@ open class ChatActivity : AppCompatActivity() {
                 return
             }
             MyLog.d(TAG, "start sendImageMessage $picturePath")
-            mViewModel.sendImageMessage(picturePath.toString())
+            mViewModel.sendImageMessage(picturePath.toString(),object : SendPictureCallback{
+                override fun onSuccess() {
+                    refreshChatList()
+                }
+
+                override fun onFailed() {
+
+                }
+
+            })
             MyLog.d(TAG, "sendImageMessage $picturePath")
         } else {
             val file = File(selectedImage.path!!)
@@ -325,7 +334,16 @@ open class ChatActivity : AppCompatActivity() {
                 return
 
             }
-            mViewModel.sendImageMessage(file.absolutePath.toString())
+            mViewModel.sendImageMessage(file.absolutePath.toString(),object:SendPictureCallback{
+                override fun onSuccess() {
+                    refreshChatList()
+                }
+
+                override fun onFailed() {
+
+                }
+
+            })
             MyLog.d(TAG, "sendImageMessage ${file.absolutePath}")
         }
 
@@ -374,5 +392,8 @@ open class ChatActivity : AppCompatActivity() {
             }
         }
     }
-
+    interface SendPictureCallback{
+        fun onSuccess()
+        fun onFailed()
+    }
 }

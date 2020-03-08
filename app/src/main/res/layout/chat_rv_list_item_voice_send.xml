@@ -14,12 +14,15 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:orientation="horizontal">
-        <View
+        <TextView
             android:visibility="gone"
             android:id="@+id/chat_activity_tv_time"
             android:layout_width="wrap_content"
-            android:layout_height="30dp"
+            android:layout_height="wrap_content"
+            android:text= "@{item.sendTime}"
+            android:textColor="@color/gray_pressed"
             android:layout_marginStart="10dp"
+            tools:text="123123123123"
             app:layout_constraintTop_toTopOf="@+id/chat_activity_iv_send_user_icon"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintBottom_toTopOf="@+id/chat_activity_ll_send_chat_content"
@@ -36,9 +39,10 @@
             app:layout_constraintRight_toLeftOf="@+id/chat_activity_iv_send_user_icon"
             >
 
-            <TextView
+            <ImageView
                 android:id="@+id/chat_activity_tv_send_chat_content"
                 android:layout_width="wrap_content"
+                android:minWidth="70dp"
                 android:layout_height="wrap_content"
                 android:minHeight="43dp"
                 android:gravity="center_vertical"
@@ -46,9 +50,26 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:background="@drawable/chatto_bg_normal"
-                android:text="@{item.content}"
-                android:textSize="20sp"
-                tools:text="11231231231312312312312312312312313123123123" />
+                />
+            <ImageView
+                android:id="@+id/chat_activity_tv_send_chat_voice_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="20dp"
+                app:layout_constraintTop_toTopOf="@+id/chat_activity_tv_send_chat_content"
+                app:layout_constraintBottom_toBottomOf="@+id/chat_activity_tv_send_chat_content"
+                app:layout_constraintRight_toRightOf="@+id/chat_activity_tv_send_chat_content"
+                android:background="@drawable/chatto_voice_playing"
+                />
+            <TextView
+                android:id="@+id/chat_activity_tv_send_chat_voice_length"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="3&quot;"
+                app:layout_constraintTop_toTopOf="@+id/chat_activity_tv_send_chat_voice_image"
+                app:layout_constraintBottom_toBottomOf="@+id/chat_activity_tv_send_chat_voice_image"
+                app:layout_constraintRight_toLeftOf="@+id/chat_activity_tv_send_chat_voice_image"
+                />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
