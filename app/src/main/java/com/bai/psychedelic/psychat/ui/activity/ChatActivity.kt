@@ -3,7 +3,6 @@ package com.bai.psychedelic.psychat.ui.activity
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.database.Cursor
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -29,8 +28,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.bai.psychedelic.psychat.data.entity.ChatMoreEntity
 import com.bai.psychedelic.psychat.ui.adapter.ChatMoreListRvAdapter
 import android.provider.MediaStore
-import android.content.ContentUris
-import android.provider.DocumentsContract
 import android.view.Gravity
 import android.widget.Toast
 import com.bai.psychedelic.psychat.R
@@ -140,7 +137,6 @@ open class ChatActivity : AppCompatActivity() {
         }
         mBinding.chatActivityRv.addOnLayoutChangeListener { v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom ->
             MyLog.d(TAG, "onLayoutChanged")
-//            TODO:mBinding.chatActivityRv.canScrollVertically()
             if (bottom < oldBottom) {
                 mBinding.chatActivityRv.post {
                     if (mBinding.chatActivityRv.adapter!!.itemCount > 0) {
@@ -206,6 +202,12 @@ open class ChatActivity : AppCompatActivity() {
             }
 
         })
+        mBinding.chatActivitySwipeRefreshLayout.setColorSchemeResources(R.color.orange,R.color.red,R.color.blue)
+        mBinding.chatActivitySwipeRefreshLayout.setOnRefreshListener {
+            mBinding.chatActivitySwipeRefreshLayout.isRefreshing = false
+            mViewModel.getMoreLocalList()
+            mChatListAdapter.refreshList(mViewModel.getLatestList())
+        }
     }
 
     private fun scrollToEnd() {

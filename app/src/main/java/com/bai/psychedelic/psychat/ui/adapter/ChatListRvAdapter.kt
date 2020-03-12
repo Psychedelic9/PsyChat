@@ -281,7 +281,6 @@ class ChatListRvAdapter constructor(
         return entity.type
     }
 
-
     inner class ViewHolder(itemView: View) :
         RecyclerView.ViewHolder(itemView) {
         private var binding: ViewDataBinding? = null

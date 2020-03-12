@@ -1,23 +1,14 @@
 package com.bai.psychedelic.psychat.data.viewmodel
 
-import android.graphics.Bitmap
 import androidx.lifecycle.ViewModel
 import com.bai.psychedelic.psychat.data.entity.ChatItemEntity
 import org.koin.core.KoinComponent
 import org.koin.core.inject
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
-import com.bai.psychedelic.psychat.data.entity.ChatMoreEntity
 import com.bai.psychedelic.psychat.utils.*
 import com.hyphenate.EMCallBack
 import com.hyphenate.chat.*
-import java.io.File
-import java.lang.reflect.Type
-import android.graphics.BitmapFactory
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import com.bai.psychedelic.psychat.ui.activity.ChatActivity
-import java.io.FileInputStream
-import java.io.FileNotFoundException
-import kotlin.concurrent.thread
+import java.lang.Exception
 
 
 class ChatViewModel : ViewModel(), KoinComponent {
@@ -38,19 +29,25 @@ class ChatViewModel : ViewModel(), KoinComponent {
         return mKeyBoardHeight.toString() + "dp"
     }
 
-    fun getChatList(): ArrayList<ChatItemEntity> {
+    fun getMoreLocalList(): ArrayList<ChatItemEntity> {
+
+        var messages:List<EMMessage> ?= null
+        messages = mConversation.loadMoreMsgFromDB(
+            if (mConversation.allMessages.size == 0) "" else mConversation.allMessages[0].msgId, pagesize
+        )
+        return changeEMMessages2ChatItemEntities(messages)
+    }
+
+    fun getLatestList(): ArrayList<ChatItemEntity>{
         var messages = mConversation.allMessages
-        val msgCount = messages?.size ?: 0
-        if (msgCount < mConversation.allMsgCount && msgCount < pagesize) {
-            var msgId: String? = null
-            if (messages != null && messages.size > 0) {
-                msgId = messages[0].msgId
-            }
-            val messageDB = mConversation.loadMoreMsgFromDB(msgId, pagesize - msgCount)
-            messages = messageDB + messages
-        }
-        mList.clear()
-        messages.forEach {
+        mConversation.markAllMessagesAsRead()
+        return changeEMMessages2ChatItemEntities(messages)
+    }
+
+
+    private fun changeEMMessages2ChatItemEntities(elist:List<EMMessage>):ArrayList<ChatItemEntity>{
+        val chatList = ArrayList<ChatItemEntity>()
+        elist.forEach {
             val chatItemEntity = ChatItemEntity()
             when (it?.type) {
                 EMMessage.Type.TXT -> {
@@ -64,7 +61,7 @@ class ChatViewModel : ViewModel(), KoinComponent {
                         content = (it.body as EMTextMessageBody).message
                         sendTime = UserUtils.changeLongTimeToDateTime(it.msgTime)
                     }
-                    mList.add(chatItemEntity)
+                    chatList.add(chatItemEntity)
                     return@forEach
                 }
                 EMMessage.Type.IMAGE -> {
@@ -81,7 +78,7 @@ class ChatViewModel : ViewModel(), KoinComponent {
                         name = it.from
                         sendTime = UserUtils.changeLongTimeToDateTime(it.msgTime)
                     }
-                    mList.add(chatItemEntity)
+                    chatList.add(chatItemEntity)
                     MyLog.d(
                         TAG,
                         "add ImageMessage url = ${chatItemEntity.content} width = ${chatItemEntity.width} height = ${chatItemEntity.height}"
@@ -108,7 +105,7 @@ class ChatViewModel : ViewModel(), KoinComponent {
                         sendTime = UserUtils.changeLongTimeToDateTime(it.msgTime)
                         voiceMessage = it
                     }
-                    mList.add(chatItemEntity)
+                    chatList.add(chatItemEntity)
                     MyLog.d(
                         TAG,
                         "add VoiceMessage url = ${chatItemEntity.content} length = ${chatItemEntity.voiceLength}"
@@ -122,6 +119,22 @@ class ChatViewModel : ViewModel(), KoinComponent {
 
             }
         }
+        return chatList
+    }
+
+    fun getChatList(): ArrayList<ChatItemEntity> {
+        var messages = mConversation.allMessages
+        val msgCount = messages?.size ?: 0
+        if (msgCount < mConversation.allMsgCount && msgCount < pagesize) {
+            var msgId: String? = null
+            if (messages != null && messages.size > 0) {
+                msgId = messages[0].msgId
+            }
+            val messageDB = mConversation.loadMoreMsgFromDB(msgId, pagesize - msgCount)
+            messages = messageDB + messages
+        }
+        mList.clear()
+        mList = changeEMMessages2ChatItemEntities(messages)
         return mList
     }
 
