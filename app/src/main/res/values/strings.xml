@@ -55,5 +55,6 @@
     <string name="loosen_fingers_cancel_send">松开手指，取消发送</string>
     <string name="record_time_too_short">录音时间过短</string>
     <string name="no_record_permission_please_allow">没有录音权限！请授权！</string>
+    <string name="slide_down_load_more">下拉加载更多</string>
 
 </resources>

@@ -140,6 +140,7 @@ open class ChatActivity : AppCompatActivity() {
         }
         mBinding.chatActivityRv.addOnLayoutChangeListener { v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom ->
             MyLog.d(TAG, "onLayoutChanged")
+//            TODO:mBinding.chatActivityRv.canScrollVertically()
             if (bottom < oldBottom) {
                 mBinding.chatActivityRv.post {
                     if (mBinding.chatActivityRv.adapter!!.itemCount > 0) {
