@@ -105,6 +105,16 @@ class ChatListRvAdapter constructor(
                 viewHolder.setBinding(chatRvListSendBinding)
                 return viewHolder
             }
+            CHAT_TYPE_MSG_TIME -> {
+                val chatRvListTimeBinding =
+                    DataBindingUtil.inflate<ChatRvItemMessageTimeBinding>(
+                        LayoutInflater.from(mContext),
+                        R.layout.chat_rv_item_message_time,parent,false
+                    )
+                val viewHolder = ViewHolder(chatRvListTimeBinding.root)
+                viewHolder.setBinding(chatRvListTimeBinding)
+                return viewHolder
+            }
             else -> {
                 val chatRvListSendBinding = DataBindingUtil.inflate<ChatRvListItemTextSendBinding>(
                     LayoutInflater.from(mContext),
@@ -248,6 +258,9 @@ class ChatListRvAdapter constructor(
                             })
                     }
                     return
+                }
+                CHAT_TYPE_MSG_TIME -> {
+
                 }
             }
 

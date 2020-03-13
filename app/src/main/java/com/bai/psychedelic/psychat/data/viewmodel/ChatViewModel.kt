@@ -47,7 +47,19 @@ class ChatViewModel : ViewModel(), KoinComponent {
 
     private fun changeEMMessages2ChatItemEntities(elist:List<EMMessage>):ArrayList<ChatItemEntity>{
         val chatList = ArrayList<ChatItemEntity>()
+        var lastMsgTime = 0L
         elist.forEach {
+            if (lastMsgTime == 0L){
+                lastMsgTime = it.msgTime
+            }else{
+                if (it.msgTime-lastMsgTime>5*60*1000){
+                    lastMsgTime = it.msgTime
+                    chatList.add(ChatItemEntity().apply {
+                        type = CHAT_TYPE_MSG_TIME
+                        sendTime = UserUtils.changeLongTimeToDateTime(it.msgTime)
+                    })
+                }
+            }
             val chatItemEntity = ChatItemEntity()
             when (it?.type) {
                 EMMessage.Type.TXT -> {
