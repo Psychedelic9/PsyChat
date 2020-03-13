@@ -7,7 +7,7 @@ object PhoneUtils {
     /**
      * 中国手机号码
      */
-    private val CHINESE_PHONE_PATTERN = Pattern.compile("((13|15|17|18)\\d{9})|(14[57]\\d{8})")
+    private val CHINESE_PHONE_PATTERN = Pattern.compile("((13|15|17|18|19)\\d{9})|(14[57]\\d{8})")
 
 
     /**

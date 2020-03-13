@@ -4,6 +4,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
 import com.bai.psychedelic.psychat.ui.activity.ChatActivity
+import com.bai.psychedelic.psychat.ui.custom.ChatVoicePlayer
 import com.bai.psychedelic.psychat.utils.MyLog
 import com.hyphenate.EMMessageListener
 import com.hyphenate.chat.EMClient
@@ -57,6 +58,10 @@ class ChatActivityObserver constructor(activity:ChatActivity):
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
     fun removeMsgListener(){
         mEMClient.chatManager().removeMessageListener(mMsgListener)
+        //如果在播放语音停止播放
+        if (ChatVoicePlayer.get(mActivity).isPlaying){
+            ChatVoicePlayer.get(mActivity).stop()
+        }
     }
 
 }

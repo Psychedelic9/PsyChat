@@ -60,10 +60,12 @@ class AddFriendsActivity : AppCompatActivity() {
         mEMClient.contactManager().setContactListener(object : EMContactListener {
             override fun onFriendRequestAccepted(username: String?) {
                Toast.makeText(mContext,"添加好友成功",Toast.LENGTH_LONG).show()
+                finish()
             }
 
             override fun onFriendRequestDeclined(username: String?) {
                 Toast.makeText(mContext,"已被对方拒绝",Toast.LENGTH_LONG).show()
+                finish()
             }
 
             override fun onContactInvited(username: String, reason: String) {
@@ -77,6 +79,7 @@ class AddFriendsActivity : AppCompatActivity() {
 
             override fun onContactAdded(username: String) {
                 Toast.makeText(mContext,"联系人已添加",Toast.LENGTH_LONG).show()
+                finish()
             }
         })
     }
