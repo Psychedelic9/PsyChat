@@ -103,8 +103,8 @@ open class ChatActivity : AppCompatActivity() {
         list.add(ChatMoreEntity("拍摄", R.drawable.icon_camera))
         list.add(ChatMoreEntity("通话", R.drawable.icon_phone))
         list.add(ChatMoreEntity("位置", R.drawable.icon_location))
-        list.add(ChatMoreEntity("语音", R.drawable.icon_voice))
-        list.add(ChatMoreEntity("收藏", R.drawable.icon_collection))
+//        list.add(ChatMoreEntity("语音", R.drawable.icon_voice))
+//        list.add(ChatMoreEntity("收藏", R.drawable.icon_collection))
         return list
     }
 

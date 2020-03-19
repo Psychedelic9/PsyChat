@@ -68,6 +68,10 @@ class SplashActivity : AppCompatActivity() {
         skipped = true
     }
 
+    override fun onBackPressed() {
+        //Splash还想退？
+    }
+
     private fun jumpToNextActivity() {
         if (mEMClient.isLoggedInBefore) {
             MainActivity.actionStart(mContext)
