@@ -33,7 +33,9 @@ import android.widget.Toast
 import com.bai.psychedelic.psychat.R
 import com.bai.psychedelic.psychat.ui.custom.RecordButton
 import java.io.File
+import java.util.*
 import java.util.concurrent.ExecutorService
+import kotlin.collections.ArrayList
 
 
 open class ChatActivity : AppCompatActivity() {
@@ -55,6 +57,7 @@ open class ChatActivity : AppCompatActivity() {
     private var mStatusBarHeight: Int = 0
     private var isNeedShowMore = false
     private var isNeedSmoothRv = true
+    private lateinit var cameraPicFile: File
 
     companion object {
         fun actionStart(context: Context) {
@@ -195,14 +198,19 @@ open class ChatActivity : AppCompatActivity() {
 
             false
         }
-        mBinding.chatActivityRecordButton.setVoiceRecorderCallback(object:RecordButton.VoiceRecorderCallback{
+        mBinding.chatActivityRecordButton.setVoiceRecorderCallback(object :
+            RecordButton.VoiceRecorderCallback {
             override fun onVoiceRecordComplete(voiceFilePath: String, voiceTimeLength: Int) {
-                mViewModel.sendVoiceMessage(voiceFilePath,voiceTimeLength)
+                mViewModel.sendVoiceMessage(voiceFilePath, voiceTimeLength)
                 refreshChatList()
             }
 
         })
-        mBinding.chatActivitySwipeRefreshLayout.setColorSchemeResources(R.color.orange,R.color.red,R.color.blue)
+        mBinding.chatActivitySwipeRefreshLayout.setColorSchemeResources(
+            R.color.orange,
+            R.color.red,
+            R.color.blue
+        )
         mBinding.chatActivitySwipeRefreshLayout.setOnRefreshListener {
             mBinding.chatActivitySwipeRefreshLayout.isRefreshing = false
             mViewModel.getMoreLocalList()
@@ -225,7 +233,7 @@ open class ChatActivity : AppCompatActivity() {
     }
 
     fun refreshChatList() {
-        mList = mViewModel.getChatList()
+        mList = mViewModel.getLatestList()
         MyLog.d(TAG, "refreshChatList() mList.size = ${mList.size}")
         mChatListAdapter.refreshList(mList)
         scrollToEnd()
@@ -296,7 +304,6 @@ open class ChatActivity : AppCompatActivity() {
     }
 
 
-
     private fun sendPicByUri(selectedImage: Uri) {
         val filePathColumn = arrayOf(MediaStore.Images.Media.DATA)
         var cursor = contentResolver
@@ -316,13 +323,13 @@ open class ChatActivity : AppCompatActivity() {
                 return
             }
             MyLog.d(TAG, "start sendImageMessage $picturePath")
-            mViewModel.sendImageMessage(picturePath.toString(),object : SendPictureCallback{
+            mViewModel.sendImageMessage(picturePath.toString(), object : SendPictureCallback {
                 override fun onSuccess() {
-                    refreshChatList()
+                    MyLog.d(TAG,"sendPicOnSuccess!")
                 }
 
                 override fun onFailed() {
-
+                    MyLog.d(TAG,"sendPicOnFailed!")
                 }
 
             })
@@ -337,52 +344,78 @@ open class ChatActivity : AppCompatActivity() {
                 return
 
             }
-            mViewModel.sendImageMessage(file.absolutePath.toString(),object:SendPictureCallback{
+            mViewModel.sendImageMessage(file.absolutePath.toString(), object : SendPictureCallback {
                 override fun onSuccess() {
-                    refreshChatList()
+                    MyLog.d(TAG,"sendPicOnSuccess!")
                 }
 
                 override fun onFailed() {
-
+                    MyLog.d(TAG,"sendPicOnFailed!")
                 }
 
             })
             MyLog.d(TAG, "sendImageMessage ${file.absolutePath}")
         }
+        //有时候收不到回调，放在OnSuccess里刷新收不到
+        mSingleExecutor.submit {
+            Thread.sleep(1000)
+            runOnUiThread {
+                refreshChatList()
+            }
+        }
+    }
 
+
+    fun getCameraPicFile(): File {
+        cameraPicFile = File(mContext.externalCacheDir, "${UUID.randomUUID()}.jpg")
+        return cameraPicFile
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-
-        if (requestCode == START_ACTIVITY_IMAGE && resultCode == RESULT_OK && null != data) {
-//            var imagePath: String? = null
-            val uri = data.data
-            if (uri!=null){
-                sendPicByUri(uri)
+        MyLog.d(TAG, "requestCode = $requestCode resultCode = $resultCode data = $data")
+        if (resultCode == RESULT_OK) {
+            when (requestCode) {
+                START_ACTIVITY_IMAGE -> {
+                    if (null != data) {
+                        val uri = data.data
+                        if (uri != null) {
+                            sendPicByUri(uri)
+                        }
+                    }
+                }
+                START_ACTIVITY_CAMERA -> {
+                    MyLog.d(TAG, "uri = ${Uri.fromFile(cameraPicFile)}")
+                    val uri = Uri.fromFile(cameraPicFile)
+                    if (uri!=null){
+                        sendPicByUri(uri)
+                    }
+                }
             }
         }
         super.onActivityResult(requestCode, resultCode, data)
 
     }
+
     @Volatile
     private var abortQuickClick = false
+
     fun voiceTextSwitch(view: View) {
         //500ms延时操作防止快速点击
-        if (!abortQuickClick){
-            if (mBinding.chatActivityEt.visibility == View.VISIBLE){
+        if (!abortQuickClick) {
+            if (mBinding.chatActivityEt.visibility == View.VISIBLE) {
                 mBinding.chatActivityEt.visibility = View.GONE
                 mBinding.chatActivityRecordButton.visibility = View.VISIBLE
                 mBinding.chatActivityIvButtonSwitch.setImageResource(R.drawable.chatting_setmode_keyboard_btn)
-                if ( mBinding.chatActivityIvButtonSend.visibility == View.VISIBLE){
+                if (mBinding.chatActivityIvButtonSend.visibility == View.VISIBLE) {
                     mBinding.chatActivityIvButtonSend.visibility = View.GONE
                     mBinding.chatActivityIvButtonMore.visibility = View.VISIBLE
                 }
-            }else{
+            } else {
                 mBinding.chatActivityEt.visibility = View.VISIBLE
                 mBinding.chatActivityRecordButton.visibility = View.GONE
                 mBinding.chatActivityRecordButton.visibility = View.GONE
                 mBinding.chatActivityIvButtonSwitch.setImageResource(R.drawable.chatting_setmode_voice_btn)
-                if (mBinding.chatActivityEt.text.isNotEmpty()){
+                if (mBinding.chatActivityEt.text.isNotEmpty()) {
                     mBinding.chatActivityIvButtonSend.visibility = View.VISIBLE
                     mBinding.chatActivityIvButtonMore.visibility = View.GONE
                 }
@@ -395,7 +428,8 @@ open class ChatActivity : AppCompatActivity() {
             }
         }
     }
-    interface SendPictureCallback{
+
+    interface SendPictureCallback {
         fun onSuccess()
         fun onFailed()
     }

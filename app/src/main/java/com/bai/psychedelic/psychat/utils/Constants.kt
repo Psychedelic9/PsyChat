@@ -20,6 +20,7 @@ const val REQUEST_PERMISSIONS = 777
 
 /** Activity result code*/
 const val START_ACTIVITY_IMAGE = 999 //打开图库
+const val START_ACTIVITY_CAMERA = 998 //打开相机
 
 
 /** 网络请求缓存大小 100M */
