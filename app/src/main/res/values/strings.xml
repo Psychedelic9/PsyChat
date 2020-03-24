@@ -56,5 +56,6 @@
     <string name="record_time_too_short">录音时间过短</string>
     <string name="no_record_permission_please_allow">没有录音权限！请授权！</string>
     <string name="slide_down_load_more">下拉加载更多</string>
+    <string name="can_not_find_video">找不到视频</string>
 
 </resources>

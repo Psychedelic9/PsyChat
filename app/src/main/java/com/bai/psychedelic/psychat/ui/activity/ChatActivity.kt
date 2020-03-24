@@ -3,6 +3,8 @@ package com.bai.psychedelic.psychat.ui.activity
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.media.ThumbnailUtils
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -33,6 +35,8 @@ import android.widget.Toast
 import com.bai.psychedelic.psychat.R
 import com.bai.psychedelic.psychat.ui.custom.RecordButton
 import java.io.File
+import java.io.FileOutputStream
+import java.lang.Exception
 import java.util.*
 import java.util.concurrent.ExecutorService
 import kotlin.collections.ArrayList
@@ -304,10 +308,65 @@ open class ChatActivity : AppCompatActivity() {
     }
 
 
-    private fun sendPicByUri(selectedImage: Uri) {
+    private fun sendVideoByUri(selectedVideo:Uri){
+        val filePathColumn = arrayOf(MediaStore.Video.Media.DATA,MediaStore.Video.Media.DURATION)
+        var cursor = contentResolver
+            .query(selectedVideo, filePathColumn, null, null, null)
+        if (cursor != null) {
+            cursor.moveToFirst()
+            val columnIndex = cursor.getColumnIndex(filePathColumn[0])
+            val columnIndexs =  cursor.getColumnIndex(filePathColumn[1])
+            val videoPath = cursor.getString(columnIndex)
+            val videoLength2 = cursor.getLong(columnIndexs)
+            cursor.close()
+            cursor = null
+            if (videoPath == null || videoPath == "null") {
+                val toast =
+                    Toast.makeText(mContext, getString(R.string.can_not_find_video), Toast.LENGTH_SHORT)
+                toast.setGravity(Gravity.CENTER, 0, 0)
+                toast.show()
+                return
+            }
+            MyLog.d(TAG, "start sendVideoMessage $videoPath length = $videoLength2")
+            val picFile = getCameraPicFile()
+            try {
+                val fos = FileOutputStream(picFile)
+                val thumbnailPic = ThumbnailUtils.createVideoThumbnail(
+                    videoPath,
+                    MediaStore.Images.Thumbnails.MICRO_KIND
+                )
+                thumbnailPic?.compress(Bitmap.CompressFormat.JPEG, 100, fos)
+                fos.close()
+                MyLog.d(TAG,"picUri = ${picFile.absolutePath}")
+                mViewModel.sendVideoMessage(videoPath,picFile.absolutePath,(videoLength2/1000).toInt(),
+                    object:SendMediaCallback{
+                        override fun onFailed(code: Int, error: String) {
+                            MyLog.d(TAG,"发送视频失败！")
+                            Toast.makeText(mContext,error,Toast.LENGTH_LONG).show()
+                        }
+
+                        override fun onSuccess() {
+                            MyLog.d(TAG,"发送视频成功！")
+                        }
+                    })
+
+            }catch (e:Exception){
+                e.printStackTrace()
+            }
+        }
+        //有时候收不到回调，放在OnSuccess里刷新收不到
+        mSingleExecutor.submit {
+            Thread.sleep(1000)
+            runOnUiThread {
+                refreshChatList()
+            }
+        }
+    }
+
+    private fun sendMediaByUri(selectedMediaUri: Uri){
         val filePathColumn = arrayOf(MediaStore.Images.Media.DATA)
         var cursor = contentResolver
-            .query(selectedImage, filePathColumn, null, null, null)
+            .query(selectedMediaUri, filePathColumn, null, null, null)
         if (cursor != null) {
             cursor.moveToFirst()
             val columnIndex = cursor.getColumnIndex(filePathColumn[0])
@@ -315,6 +374,13 @@ open class ChatActivity : AppCompatActivity() {
             cursor.close()
             cursor = null
 
+            //TODO:需要通过路径来判断是视频还是图片，暂时没有想到其他好的代替方案
+            if (FileUtil.isVideo(picturePath)){
+                sendVideoByUri(selectedMediaUri)
+                MyLog.d(TAG,"user select video")
+                return
+            }
+            //如果不是视频说明选择的就是图片
             if (picturePath == null || picturePath == "null") {
                 val toast =
                     Toast.makeText(mContext, R.string.cant_find_pictures, Toast.LENGTH_SHORT)
@@ -323,19 +389,21 @@ open class ChatActivity : AppCompatActivity() {
                 return
             }
             MyLog.d(TAG, "start sendImageMessage $picturePath")
-            mViewModel.sendImageMessage(picturePath.toString(), object : SendPictureCallback {
+
+
+            mViewModel.sendImageMessage(picturePath.toString(), object : SendMediaCallback {
+                override fun onFailed(code: Int, error: String) {
+                    MyLog.d(TAG,"sendPicOnFailed!")
+                    Toast.makeText(mContext,error,Toast.LENGTH_LONG).show()
+                }
+
                 override fun onSuccess() {
                     MyLog.d(TAG,"sendPicOnSuccess!")
                 }
-
-                override fun onFailed() {
-                    MyLog.d(TAG,"sendPicOnFailed!")
-                }
-
             })
             MyLog.d(TAG, "sendImageMessage $picturePath")
         } else {
-            val file = File(selectedImage.path!!)
+            val file = File(selectedMediaUri.path!!)
             if (!file.exists()) {
                 val toast =
                     Toast.makeText(mContext, R.string.cant_find_pictures, Toast.LENGTH_SHORT)
@@ -344,15 +412,15 @@ open class ChatActivity : AppCompatActivity() {
                 return
 
             }
-            mViewModel.sendImageMessage(file.absolutePath.toString(), object : SendPictureCallback {
+            mViewModel.sendImageMessage(file.absolutePath.toString(), object : SendMediaCallback {
+                override fun onFailed(code: Int, error: String) {
+                    MyLog.d(TAG,"sendPicOnFailed! $code $error")
+                    Toast.makeText(mContext,error,Toast.LENGTH_LONG).show()
+                }
+
                 override fun onSuccess() {
                     MyLog.d(TAG,"sendPicOnSuccess!")
                 }
-
-                override fun onFailed() {
-                    MyLog.d(TAG,"sendPicOnFailed!")
-                }
-
             })
             MyLog.d(TAG, "sendImageMessage ${file.absolutePath}")
         }
@@ -378,8 +446,9 @@ open class ChatActivity : AppCompatActivity() {
                 START_ACTIVITY_IMAGE -> {
                     if (null != data) {
                         val uri = data.data
+                        MyLog.d(TAG, "uri = ${data.data}")
                         if (uri != null) {
-                            sendPicByUri(uri)
+                            sendMediaByUri(uri)
                         }
                     }
                 }
@@ -387,7 +456,7 @@ open class ChatActivity : AppCompatActivity() {
                     MyLog.d(TAG, "uri = ${Uri.fromFile(cameraPicFile)}")
                     val uri = Uri.fromFile(cameraPicFile)
                     if (uri!=null){
-                        sendPicByUri(uri)
+                        sendMediaByUri(uri)
                     }
                 }
             }
@@ -429,8 +498,8 @@ open class ChatActivity : AppCompatActivity() {
         }
     }
 
-    interface SendPictureCallback {
+    interface SendMediaCallback {
         fun onSuccess()
-        fun onFailed()
+        fun onFailed(code:Int,error:String)
     }
 }

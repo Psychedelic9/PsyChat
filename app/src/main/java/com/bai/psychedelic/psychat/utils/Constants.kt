@@ -13,6 +13,8 @@ const val CHAT_TYPE_SEND_IMAGE = CHAT_TYPE_GET_IMAGE + 1
 const val CHAT_TYPE_GET_VOICE = CHAT_TYPE_SEND_IMAGE + 1
 const val CHAT_TYPE_SEND_VOICE = CHAT_TYPE_GET_VOICE + 1
 const val CHAT_TYPE_MSG_TIME = CHAT_TYPE_SEND_VOICE + 1
+const val CHAT_TYPE_GET_VIDEO = CHAT_TYPE_MSG_TIME + 1
+const val CHAT_TYPE_SEND_VIDEO = CHAT_TYPE_GET_VIDEO + 1
 
 /** 动态运行权限*/
 
@@ -41,4 +43,5 @@ const val SP_KEYBOARD_HEIGHT = "sp_keyboard_height"
 const val CONVERSATION_USER_ID = "conversation_user_id"
 
 /** intent Extra*/
-const val PICURLFROMTHUMBNAIL = "picUrlFromThumbnail"
+const val PIC_URL_FROM_THUMBNAIL = "pic_url_from_thumbnail"
+const val VIDEO_URL_FROM_DB = "video_url_from_db"

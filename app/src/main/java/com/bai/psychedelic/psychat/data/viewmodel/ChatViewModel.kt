@@ -1,5 +1,6 @@
 package com.bai.psychedelic.psychat.data.viewmodel
 
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import com.bai.psychedelic.psychat.data.entity.ChatItemEntity
 import org.koin.core.KoinComponent
@@ -8,7 +9,7 @@ import com.bai.psychedelic.psychat.utils.*
 import com.hyphenate.EMCallBack
 import com.hyphenate.chat.*
 import com.bai.psychedelic.psychat.ui.activity.ChatActivity
-import java.lang.Exception
+import java.io.File
 
 
 class ChatViewModel : ViewModel(), KoinComponent {
@@ -31,28 +32,29 @@ class ChatViewModel : ViewModel(), KoinComponent {
 
     fun getMoreLocalList(): ArrayList<ChatItemEntity> {
 
-        var messages:List<EMMessage> ?= null
+        var messages: List<EMMessage>? = null
         messages = mConversation.loadMoreMsgFromDB(
-            if (mConversation.allMessages.size == 0) "" else mConversation.allMessages[0].msgId, pagesize
+            if (mConversation.allMessages.size == 0) "" else mConversation.allMessages[0].msgId,
+            pagesize
         )
         return changeEMMessages2ChatItemEntities(messages)
     }
 
-    fun getLatestList(): ArrayList<ChatItemEntity>{
+    fun getLatestList(): ArrayList<ChatItemEntity> {
         var messages = mConversation.allMessages
         mConversation.markAllMessagesAsRead()
         return changeEMMessages2ChatItemEntities(messages)
     }
 
 
-    private fun changeEMMessages2ChatItemEntities(elist:List<EMMessage>):ArrayList<ChatItemEntity>{
+    private fun changeEMMessages2ChatItemEntities(elist: List<EMMessage>): ArrayList<ChatItemEntity> {
         val chatList = ArrayList<ChatItemEntity>()
         var lastMsgTime = 0L
         elist.forEach {
-            if (lastMsgTime == 0L){
+            if (lastMsgTime == 0L) {
                 lastMsgTime = it.msgTime
-            }else{
-                if (it.msgTime-lastMsgTime>5*60*1000){
+            } else {
+                if (it.msgTime - lastMsgTime > 5 * 60 * 1000) {
                     lastMsgTime = it.msgTime
                     chatList.add(ChatItemEntity().apply {
                         type = CHAT_TYPE_MSG_TIME
@@ -95,11 +97,27 @@ class ChatViewModel : ViewModel(), KoinComponent {
                         TAG,
                         "add ImageMessage url = ${chatItemEntity.content} width = ${chatItemEntity.width} height = ${chatItemEntity.height}"
                     )
-
-
                     return@forEach
                 }
                 EMMessage.Type.VIDEO -> {
+                    chatItemEntity.apply {
+                        if (it.from == mEMClient.currentUser){
+                            type = CHAT_TYPE_SEND_VIDEO
+                            content = (it.body as EMVideoMessageBody).localUrl
+                        }else{
+                            type = CHAT_TYPE_GET_VIDEO
+                            content = (it.body as EMVideoMessageBody).remoteUrl
+                        }
+                        width = (it.body as EMVideoMessageBody).thumbnailWidth
+                        height = (it.body as EMVideoMessageBody).thumbnailHeight
+                        name = it.from
+                        sendTime = UserUtils.changeLongTimeToDateTime(it.msgTime)
+                        length = (it.body as EMVideoMessageBody).duration
+                        message = it
+                    }
+                    MyLog.d(TAG,"width = ${chatItemEntity.width} height = ${chatItemEntity.height}")
+                    chatList.add(chatItemEntity)
+                    return@forEach
                 }
                 EMMessage.Type.LOCATION -> {
                 }
@@ -108,19 +126,19 @@ class ChatViewModel : ViewModel(), KoinComponent {
                         if (it.from == mEMClient.currentUser) {
                             type = CHAT_TYPE_SEND_VOICE
                             content = (it.body as EMVoiceMessageBody).localUrl
-                        }else{
+                        } else {
                             type = CHAT_TYPE_GET_VOICE
                             content = (it.body as EMVoiceMessageBody).remoteUrl
                         }
                         name = it.from
-                        voiceLength = (it.body as EMVoiceMessageBody).length
+                        length = (it.body as EMVoiceMessageBody).length
                         sendTime = UserUtils.changeLongTimeToDateTime(it.msgTime)
-                        voiceMessage = it
+                        message = it
                     }
                     chatList.add(chatItemEntity)
                     MyLog.d(
                         TAG,
-                        "add VoiceMessage url = ${chatItemEntity.content} length = ${chatItemEntity.voiceLength}"
+                        "add VoiceMessage url = ${chatItemEntity.content} length = ${chatItemEntity.length}"
                     )
                     return@forEach
                 }
@@ -154,7 +172,37 @@ class ChatViewModel : ViewModel(), KoinComponent {
         mNickName = name
     }
 
-    fun sendImageMessage(path: String,callback: ChatActivity.SendPictureCallback) {
+    fun sendVideoMessage(
+        videoPath: String,
+        imagePath: String,
+        length: Int,
+        callback: ChatActivity.SendMediaCallback
+    ) {
+        val message = EMMessage.createVideoSendMessage(videoPath,imagePath,length,mConversationUserId)
+        message.setMessageStatusCallback(object:EMCallBack{
+            override fun onSuccess() {
+                callback.onSuccess()
+            }
+
+            override fun onProgress(progress: Int, status: String?) {
+                MyLog.d(TAG,"视频消息发送中...")
+            }
+
+            override fun onError(code: Int, error: String?) {
+                callback.onFailed(code,error.toString())
+
+            }
+
+        })
+        if (mConversation.type == EMConversation.EMConversationType.GroupChat) {
+            message.chatType = EMMessage.ChatType.GroupChat
+        }
+
+        mEMClient.chatManager().sendMessage(message)
+    }
+
+
+    fun sendImageMessage(path: String, callback: ChatActivity.SendMediaCallback) {
 
         val message = EMMessage.createImageSendMessage(path, false, mConversationUserId)
 
@@ -171,7 +219,7 @@ class ChatViewModel : ViewModel(), KoinComponent {
 
             override fun onError(code: Int, error: String?) {
                 MyLog.d(TAG, "sendImageMessage onError code = $code error = $error")
-                callback.onFailed()
+                callback.onFailed(code,error.toString())
             }
         })
 
@@ -192,7 +240,8 @@ class ChatViewModel : ViewModel(), KoinComponent {
     }
 
     fun sendVoiceMessage(voiceFilePath: String, voiceTimeLength: Int) {
-        val message = EMMessage.createVoiceSendMessage(voiceFilePath,voiceTimeLength,mConversationUserId)
+        val message =
+            EMMessage.createVoiceSendMessage(voiceFilePath, voiceTimeLength, mConversationUserId)
         if (mConversation.type == EMConversation.EMConversationType.GroupChat) {
             message.chatType = EMMessage.ChatType.GroupChat
         }
@@ -207,7 +256,6 @@ class ChatViewModel : ViewModel(), KoinComponent {
     fun getConversation(): EMConversation {
         return mConversation
     }
-
 
 
 }

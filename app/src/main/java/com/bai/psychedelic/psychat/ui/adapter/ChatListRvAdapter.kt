@@ -19,9 +19,8 @@ import com.bai.psychedelic.psychat.utils.*
 import com.bumptech.glide.Glide
 import android.graphics.Point
 import android.graphics.drawable.AnimationDrawable
-import com.hyphenate.chat.EMClient
-import com.hyphenate.chat.EMFileMessageBody
-import com.hyphenate.chat.EMVoiceMessageBody
+import com.bai.psychedelic.psychat.ui.activity.VideoFullScreenActivity
+import com.hyphenate.chat.*
 import kotlin.concurrent.thread
 
 
@@ -34,6 +33,7 @@ class ChatListRvAdapter constructor(
         private const val TAG = "ChatListRvAdapter"
     }
 
+    private val mVideoThumbnailMultiple = 6
     private val mContext = context
     private var mList: ArrayList<ChatItemEntity> = list
     private val mVariableId = variableId
@@ -109,10 +109,30 @@ class ChatListRvAdapter constructor(
                 val chatRvListTimeBinding =
                     DataBindingUtil.inflate<ChatRvItemMessageTimeBinding>(
                         LayoutInflater.from(mContext),
-                        R.layout.chat_rv_item_message_time,parent,false
+                        R.layout.chat_rv_item_message_time, parent, false
                     )
                 val viewHolder = ViewHolder(chatRvListTimeBinding.root)
                 viewHolder.setBinding(chatRvListTimeBinding)
+                return viewHolder
+            }
+            CHAT_TYPE_GET_VIDEO -> {
+                val chatRvListVideoReceiveBinding =
+                    DataBindingUtil.inflate<ChatRvItemMessageVideoReceiveBinding>(
+                        LayoutInflater.from(mContext),
+                        R.layout.chat_rv_item_message_video_receive, parent, false
+                    )
+                val viewHolder = ViewHolder(chatRvListVideoReceiveBinding.root)
+                viewHolder.setBinding(chatRvListVideoReceiveBinding)
+                return viewHolder
+            }
+            CHAT_TYPE_SEND_VIDEO -> {
+                val chatRvListVideoSendBinding =
+                    DataBindingUtil.inflate<ChatRvItemMessageVideoSendBinding>(
+                        LayoutInflater.from(mContext),
+                        R.layout.chat_rv_item_message_video_send, parent, false
+                    )
+                val viewHolder = ViewHolder(chatRvListVideoSendBinding.root)
+                viewHolder.setBinding(chatRvListVideoSendBinding)
                 return viewHolder
             }
             else -> {
@@ -154,7 +174,7 @@ class ChatListRvAdapter constructor(
                     (holder.getBinding() as ChatRvListItemImageReceiveBinding)
                         .chatActivityIvReceiveImageChatContent.setOnClickListener {
                         val intent = Intent(mContext, ImageFullScreenActivity::class.java)
-                        intent.putExtra(PICURLFROMTHUMBNAIL, mList[position].content)
+                        intent.putExtra(PIC_URL_FROM_THUMBNAIL, mList[position].content)
                         mContext.startActivity(intent)
                     }
                     return
@@ -177,7 +197,7 @@ class ChatListRvAdapter constructor(
                     (holder.getBinding() as ChatRvListItemImageSendBinding)
                         .chatActivityIvSendImageChatContent.setOnClickListener {
                         val intent = Intent(mContext, ImageFullScreenActivity::class.java)
-                        intent.putExtra(PICURLFROMTHUMBNAIL, mList[position].content)
+                        intent.putExtra(PIC_URL_FROM_THUMBNAIL, mList[position].content)
                         mContext.startActivity(intent)
                     }
                     return
@@ -187,12 +207,12 @@ class ChatListRvAdapter constructor(
                     val layoutParams =
                         (holder.getBinding() as ChatRvListItemVoiceReceiveBinding)
                             .chatActivityTvReceiveChatContent.layoutParams
-                    layoutParams.width = getVoiceWidthByTime(mList[position].voiceLength)
+                    layoutParams.width = getVoiceWidthByTime(mList[position].length)
                     (holder.getBinding() as ChatRvListItemVoiceReceiveBinding)
                         .chatActivityTvReceiveChatContent.layoutParams = layoutParams
                     (holder.getBinding() as ChatRvListItemVoiceReceiveBinding)
                         .chatActivityTvReceiveChatVoiceLength.text =
-                        mList[position].voiceLength.toString() + "\""
+                        mList[position].length.toString() + "\""
                     (holder.getBinding() as ChatRvListItemVoiceReceiveBinding)
                         .chatActivityTvReceiveChatContent.setOnClickListener {
                         (holder.getBinding() as ChatRvListItemVoiceReceiveBinding).chatActivityTvReceiveChatVoiceImage
@@ -203,21 +223,23 @@ class ChatListRvAdapter constructor(
                         if (!animReceive.isRunning) {
                             animReceive.start()
                         }
-                        val message = mList[position].voiceMessage
-                        MyLog.d(TAG,"receive voice message status = ${message?.status()} " +
-                                " ${EMClient.getInstance().getOptions().getAutodownloadThumbnail()}" +
-                                " voiceBody.downloadStatus() = ${(message?.body as EMVoiceMessageBody).downloadStatus()}" +
-                                " LocalUrl = ${(message?.body as EMVoiceMessageBody).localUrl}" +
-                                " remoteUrl = ${(message?.body as EMVoiceMessageBody).remoteUrl}")
-                        if ((message?.body as EMVoiceMessageBody).downloadStatus() == EMFileMessageBody.EMDownloadStatus.FAILED){
-                            MyLog.d(TAG,"语音下载失败")
-                            thread(true){
+                        val message = mList[position].message
+                        MyLog.d(
+                            TAG, "receive voice message status = ${message?.status()} " +
+                                    " ${EMClient.getInstance().options.autodownloadThumbnail}" +
+                                    " voiceBody.downloadStatus() = ${(message?.body as EMVoiceMessageBody).downloadStatus()}" +
+                                    " LocalUrl = ${(message?.body as EMVoiceMessageBody).localUrl}" +
+                                    " remoteUrl = ${(message?.body as EMVoiceMessageBody).remoteUrl}"
+                        )
+                        if ((message?.body as EMVoiceMessageBody).downloadStatus() == EMFileMessageBody.EMDownloadStatus.FAILED) {
+                            MyLog.d(TAG, "语音下载失败")
+                            thread(true) {
                                 //TODO:线程池 判断download状态
                                 EMClient.getInstance().chatManager().downloadAttachment(message)
                             }
 
                         }
-                        chatVoicePlayer.play(mList[position].voiceMessage!!,
+                        chatVoicePlayer.play(mList[position].message!!,
                             MediaPlayer.OnCompletionListener {
                                 animReceive.stop()
                                 (holder.getBinding() as ChatRvListItemVoiceReceiveBinding).chatActivityTvReceiveChatVoiceImage
@@ -231,12 +253,12 @@ class ChatListRvAdapter constructor(
                     val layoutParams =
                         (holder.getBinding() as ChatRvListItemVoiceSendBinding)
                             .chatActivityTvSendChatContent.layoutParams
-                    layoutParams.width = getVoiceWidthByTime(mList[position].voiceLength)
+                    layoutParams.width = getVoiceWidthByTime(mList[position].length)
                     (holder.getBinding() as ChatRvListItemVoiceSendBinding)
                         .chatActivityTvSendChatContent.layoutParams = layoutParams
                     (holder.getBinding() as ChatRvListItemVoiceSendBinding)
                         .chatActivityTvSendChatVoiceLength.text =
-                        mList[position].voiceLength.toString() + "\""
+                        mList[position].length.toString() + "\""
                     (holder.getBinding() as ChatRvListItemVoiceSendBinding)
                         .chatActivityTvSendChatContent.setOnClickListener {
 
@@ -250,7 +272,7 @@ class ChatListRvAdapter constructor(
                         if (!animSend.isRunning) {
                             animSend.start()
                         }
-                        chatVoicePlayer.play(mList[position].voiceMessage!!,
+                        chatVoicePlayer.play(mList[position].message!!,
                             MediaPlayer.OnCompletionListener {
                                 animSend.stop()
                                 (holder.getBinding() as ChatRvListItemVoiceSendBinding)
@@ -260,7 +282,68 @@ class ChatListRvAdapter constructor(
                     return
                 }
                 CHAT_TYPE_MSG_TIME -> {
-
+                    //
+                }
+                CHAT_TYPE_GET_VIDEO -> {
+                    MyLog.d(
+                        TAG,
+                        "onBindViewHolder get Video url = ${(mList[position].message?.body as EMVideoMessageBody).thumbnailUrl}"
+                    )
+                    val layoutParams =
+                        (holder.getBinding() as ChatRvItemMessageVideoReceiveBinding)
+                            .chatActivityIvReceiveVideoChatContent.layoutParams
+                    layoutParams.width = (mList[position].width) * mVideoThumbnailMultiple
+                    layoutParams.height = (mList[position].height) * mVideoThumbnailMultiple
+                    (holder.getBinding() as ChatRvItemMessageVideoReceiveBinding)
+                        .chatActivityIvReceiveVideoChatContent.layoutParams = layoutParams
+                    Glide.with(mContext)
+                        .load((mList[position].message?.body as EMVideoMessageBody).thumbnailUrl)
+                        .override(
+                            (mList[position].width * mVideoThumbnailMultiple),
+                            (mList[position].height * mVideoThumbnailMultiple)
+                        )
+                        .into(
+                            (holder.getBinding() as ChatRvItemMessageVideoReceiveBinding)
+                                .chatActivityIvReceiveVideoChatContent
+                        )
+                    (holder.getBinding() as ChatRvItemMessageVideoReceiveBinding)
+                        .chatActivityIvReceiveVideoChatContent.setOnClickListener {
+                        //TODO:跳转视频播放Activity
+                        val intent = Intent(mContext,VideoFullScreenActivity::class.java)
+                        intent.putExtra(VIDEO_URL_FROM_DB,mList[position].content)
+                        mContext.startActivity(intent)
+                    }
+                    return
+                }
+                CHAT_TYPE_SEND_VIDEO -> {
+                    MyLog.d(
+                        TAG, "onBindViewHolder send Video url = " +
+                                (mList[position].message?.body as EMVideoMessageBody).localThumb
+                    )
+                    val layoutParams =
+                        (holder.getBinding() as ChatRvItemMessageVideoSendBinding)
+                            .chatActivityIvSendVideoChatContent.layoutParams
+                    layoutParams.width = (mList[position].width) * mVideoThumbnailMultiple
+                    layoutParams.height = (mList[position].height) * mVideoThumbnailMultiple
+                    (holder.getBinding() as ChatRvItemMessageVideoSendBinding)
+                        .chatActivityIvSendVideoChatContent.layoutParams = layoutParams
+                    Glide.with(mContext)
+                        .load((mList[position].message?.body as EMVideoMessageBody).localThumb)
+                        .override(
+                            (mList[position].width * mVideoThumbnailMultiple),
+                            (mList[position].height * mVideoThumbnailMultiple)
+                        )
+                        .into(
+                            (holder.getBinding() as ChatRvItemMessageVideoSendBinding)
+                                .chatActivityIvSendVideoChatContent
+                        )
+                    (holder.getBinding() as ChatRvItemMessageVideoSendBinding)
+                        .chatActivityIvSendVideoChatContent.setOnClickListener {
+                        val intent = Intent(mContext,VideoFullScreenActivity::class.java)
+                        intent.putExtra(VIDEO_URL_FROM_DB,mList[position].content)
+                        mContext.startActivity(intent)
+                    }
+                    return
                 }
             }
 
@@ -278,12 +361,12 @@ class ChatListRvAdapter constructor(
             TAG,
             "getVoiceWidthByTime screenwidth = $screenWidth time = $timeLength width = $width"
         )
-        val minWidthDp = DisplayUtil.dip2px(mContext,70f)
-        val maxWidthMarginDp = DisplayUtil.dip2px(mContext,100f)
-        if (width > screenWidth - maxWidthMarginDp){
+        val minWidthDp = DisplayUtil.dip2px(mContext, 70f)
+        val maxWidthMarginDp = DisplayUtil.dip2px(mContext, 100f)
+        if (width > screenWidth - maxWidthMarginDp) {
             width = (screenWidth - maxWidthMarginDp).toDouble()
         }
-        if (width < minWidthDp ){
+        if (width < minWidthDp) {
             width += minWidthDp
         }
         return width.toInt()

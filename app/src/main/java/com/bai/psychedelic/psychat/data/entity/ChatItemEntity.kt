@@ -11,8 +11,8 @@ open class ChatItemEntity(
     var sendTime:String = "",
     var height:Int = 0,
     var width:Int = 0,
-    var voiceLength:Int = 0,
-    var voiceMessage:EMMessage?= null
+    var length:Int = 0,
+    var message:EMMessage?= null
 )
 {
 

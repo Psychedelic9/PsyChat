@@ -8,8 +8,7 @@ import android.view.WindowManager
 import androidx.databinding.DataBindingUtil
 import com.bai.psychedelic.psychat.R
 import com.bai.psychedelic.psychat.databinding.ActivityImageFullScreenBinding
-import com.bai.psychedelic.psychat.utils.MyLog
-import com.bai.psychedelic.psychat.utils.PICURLFROMTHUMBNAIL
+import com.bai.psychedelic.psychat.utils.PIC_URL_FROM_THUMBNAIL
 import com.bai.psychedelic.psychat.utils.StatusBarUtil
 import com.bumptech.glide.Glide
 
@@ -26,11 +25,11 @@ class ImageFullScreenActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //隐藏状态栏
-        window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
         mBinding = DataBindingUtil.setContentView(this,R.layout.activity_image_full_screen)
         mContext = this
         setStatusBar()
-        mUrl = intent.getStringExtra(PICURLFROMTHUMBNAIL)
+        mUrl = intent.getStringExtra(PIC_URL_FROM_THUMBNAIL)
     }
 
 
