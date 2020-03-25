@@ -52,13 +52,13 @@
         </provider>
         <activity android:name=".ui.activity.VideoFullScreenActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:launchMode="singleInstance"
+            android:launchMode="singleTop"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
 
         <activity
             android:name=".ui.activity.ImageFullScreenActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:launchMode="singleInstance"
+            android:launchMode="singleTop"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".ui.activity.AddFriendsActivity"

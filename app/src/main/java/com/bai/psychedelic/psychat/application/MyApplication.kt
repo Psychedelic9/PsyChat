@@ -16,10 +16,23 @@ import io.realm.RealmConfiguration
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 import java.io.FileNotFoundException
+import androidx.core.content.ContextCompat.getSystemService
+import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+import androidx.core.content.ContextCompat.getSystemService
+import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+
+
+
+
 
 
 class MyApplication : Application() {
-    private val TAG = "MyApplication"
+    companion object{
+        private val TAG = "MyApplication"
+    }
+
+
+
     override fun onCreate() {
         super.onCreate()
         MyLog.d(TAG, "onCreate")
