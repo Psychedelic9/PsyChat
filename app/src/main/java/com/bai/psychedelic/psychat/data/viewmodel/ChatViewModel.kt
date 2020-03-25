@@ -190,14 +190,11 @@ class ChatViewModel : ViewModel(), KoinComponent {
 
             override fun onError(code: Int, error: String?) {
                 callback.onFailed(code,error.toString())
-
             }
-
         })
         if (mConversation.type == EMConversation.EMConversationType.GroupChat) {
             message.chatType = EMMessage.ChatType.GroupChat
         }
-
         mEMClient.chatManager().sendMessage(message)
     }
 

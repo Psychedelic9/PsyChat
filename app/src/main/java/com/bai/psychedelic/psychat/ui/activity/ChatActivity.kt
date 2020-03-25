@@ -35,6 +35,7 @@ import android.widget.Toast
 import com.bai.psychedelic.psychat.R
 import com.bai.psychedelic.psychat.ui.custom.RecordButton
 import java.io.File
+import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.lang.Exception
 import java.util.*
@@ -338,6 +339,14 @@ open class ChatActivity : AppCompatActivity() {
                 thumbnailPic?.compress(Bitmap.CompressFormat.JPEG, 100, fos)
                 fos.close()
                 MyLog.d(TAG,"picUri = ${picFile.absolutePath}")
+                val fis = FileInputStream(File(videoPath))
+                val size = fis.available()
+                fis.close()
+                MyLog.d(TAG,"video size = $size")
+                if (size>10*1024*1024){
+                    Toast.makeText(mContext,"视频大小超过限制，请上传10M以下文件",Toast.LENGTH_LONG).show()
+                    return
+                }
                 mViewModel.sendVideoMessage(videoPath,picFile.absolutePath,(videoLength2/1000).toInt(),
                     object:SendMediaCallback{
                         override fun onFailed(code: Int, error: String) {
