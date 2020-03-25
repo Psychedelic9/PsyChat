@@ -129,7 +129,7 @@ class VideoFullScreenActivity : AppCompatActivity() {
 
     override fun onStop() {
         super.onStop()
-        mPlayer.stop()
+        mPlayer.stop() 
     }
 
 
