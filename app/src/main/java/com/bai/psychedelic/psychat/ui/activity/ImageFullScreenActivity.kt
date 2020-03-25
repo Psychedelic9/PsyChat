@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Window
 import android.view.WindowManager
 import androidx.databinding.DataBindingUtil
 import com.bai.psychedelic.psychat.R
@@ -11,6 +12,9 @@ import com.bai.psychedelic.psychat.databinding.ActivityImageFullScreenBinding
 import com.bai.psychedelic.psychat.utils.PIC_URL_FROM_THUMBNAIL
 import com.bai.psychedelic.psychat.utils.StatusBarUtil
 import com.bumptech.glide.Glide
+import android.transition.TransitionInflater
+
+
 
 class ImageFullScreenActivity : AppCompatActivity() {
     private lateinit var mBinding:ActivityImageFullScreenBinding

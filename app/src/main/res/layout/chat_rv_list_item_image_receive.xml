@@ -58,7 +58,8 @@
                 app:layout_constraintTop_toTopOf="parent"
                 android:background="@drawable/chatfrom_bg_normal"
                 android:src="@drawable/large_logo_default_4"
-                 />
+                android:transitionName="sharedImageView"
+                />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 

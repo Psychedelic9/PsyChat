@@ -12,6 +12,7 @@
         android:layout_height="match_parent"
         android:fitsSystemWindows="true"
         android:background="@color/black"
+        android:transitionName="sharedImageView"
         tools:context=".ui.activity.ImageFullScreenActivity">
         <com.bai.psychedelic.psychat.ui.custom.ZoomImageView
             android:id="@+id/activity_image_full_screen_iv"

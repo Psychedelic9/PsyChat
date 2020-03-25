@@ -1,5 +1,6 @@
 package com.bai.psychedelic.psychat.ui.adapter
 
+import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
 import android.media.MediaPlayer
@@ -175,7 +176,14 @@ class ChatListRvAdapter constructor(
                         .chatActivityIvReceiveImageChatContent.setOnClickListener {
                         val intent = Intent(mContext, ImageFullScreenActivity::class.java)
                         intent.putExtra(PIC_URL_FROM_THUMBNAIL, mList[position].content)
-                        mContext.startActivity(intent)
+                        mContext.startActivity(
+                            intent,
+                            ActivityOptions.makeSceneTransitionAnimation(
+                                mContext as AppCompatActivity,
+                                (holder.getBinding() as ChatRvListItemImageReceiveBinding)
+                                    .chatActivityIvReceiveImageChatContent, "sharedImageView"
+                            ).toBundle()
+                        )
                     }
                     return
                 }
@@ -198,7 +206,14 @@ class ChatListRvAdapter constructor(
                         .chatActivityIvSendImageChatContent.setOnClickListener {
                         val intent = Intent(mContext, ImageFullScreenActivity::class.java)
                         intent.putExtra(PIC_URL_FROM_THUMBNAIL, mList[position].content)
-                        mContext.startActivity(intent)
+                        mContext.startActivity(
+                            intent, ActivityOptions.makeSceneTransitionAnimation(
+                                mContext as AppCompatActivity,
+                                (holder.getBinding() as ChatRvListItemImageSendBinding)
+                                    .chatActivityIvSendImageChatContent,
+                                "sharedImageView"
+                            ).toBundle()
+                        )
                     }
                     return
                 }
@@ -308,10 +323,17 @@ class ChatListRvAdapter constructor(
                         )
                     (holder.getBinding() as ChatRvItemMessageVideoReceiveBinding)
                         .chatActivityIvReceiveVideoChatContent.setOnClickListener {
-                        //TODO:跳转视频播放Activity
-                        val intent = Intent(mContext,VideoFullScreenActivity::class.java)
-                        intent.putExtra(VIDEO_URL_FROM_DB,mList[position].content)
-                        mContext.startActivity(intent)
+                        val intent = Intent(mContext, VideoFullScreenActivity::class.java)
+                        intent.putExtra(VIDEO_URL_FROM_DB, mList[position].content)
+                        mContext.startActivity(
+                            intent
+//                            , ActivityOptions.makeSceneTransitionAnimation(
+//                                mContext as AppCompatActivity,
+//                                (holder.getBinding() as ChatRvItemMessageVideoReceiveBinding)
+//                                    .chatActivityIvReceiveVideoChatContent,
+//                                "sharedVideoView"
+//                            ).toBundle()
+                        )
                     }
                     return
                 }
@@ -339,9 +361,17 @@ class ChatListRvAdapter constructor(
                         )
                     (holder.getBinding() as ChatRvItemMessageVideoSendBinding)
                         .chatActivityIvSendVideoChatContent.setOnClickListener {
-                        val intent = Intent(mContext,VideoFullScreenActivity::class.java)
-                        intent.putExtra(VIDEO_URL_FROM_DB,mList[position].content)
-                        mContext.startActivity(intent)
+                        val intent = Intent(mContext, VideoFullScreenActivity::class.java)
+                        intent.putExtra(VIDEO_URL_FROM_DB, mList[position].content)
+                        mContext.startActivity(
+                            intent
+//                            , ActivityOptions.makeSceneTransitionAnimation(
+//                                mContext as AppCompatActivity,
+//                                (holder.getBinding() as ChatRvItemMessageVideoSendBinding)
+//                                    .chatActivityIvSendVideoChatContent,
+//                                "sharedVideoView"
+//                            ).toBundle()
+                        )
                     }
                     return
                 }

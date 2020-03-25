@@ -50,6 +50,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:background="@drawable/chatto_bg_normal"
                 android:src="@drawable/large_logo_default_4"
+                android:transitionName="sharedImageView"
                 />
         </androidx.constraintlayout.widget.ConstraintLayout>
 

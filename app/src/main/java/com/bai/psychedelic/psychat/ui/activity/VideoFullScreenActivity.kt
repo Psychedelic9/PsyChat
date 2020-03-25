@@ -6,6 +6,8 @@ import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.PersistableBundle
+import android.transition.TransitionInflater
+import android.view.Window
 import android.view.WindowManager
 import androidx.databinding.DataBindingUtil
 import com.bai.psychedelic.psychat.BuildConfig

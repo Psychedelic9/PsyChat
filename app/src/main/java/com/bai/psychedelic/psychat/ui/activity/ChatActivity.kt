@@ -336,6 +336,7 @@ open class ChatActivity : AppCompatActivity() {
                     videoPath,
                     MediaStore.Images.Thumbnails.MICRO_KIND
                 )
+
                 thumbnailPic?.compress(Bitmap.CompressFormat.JPEG, 100, fos)
                 fos.close()
                 MyLog.d(TAG,"picUri = ${picFile.absolutePath}")
