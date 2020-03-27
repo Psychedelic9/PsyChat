@@ -15,9 +15,11 @@ import android.view.View
 import android.view.ViewConfiguration
 import android.view.ViewTreeObserver
 import android.widget.ImageView
+import androidx.appcompat.app.AppCompatActivity
 import com.bai.psychedelic.psychat.utils.MyLog
 
 import java.util.ArrayList
+import kotlin.concurrent.thread
 
 
 /**
@@ -117,7 +119,7 @@ class ZoomImageView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
     }
 
     fun initView(context: Context) {
-
+        MyLog.d(TAG,"initView()")
         scaleType = ImageView.ScaleType.MATRIX
         mMatrix = Matrix()
         mScaleGestureDetector = ScaleGestureDetector(context, this)
@@ -209,86 +211,91 @@ class ZoomImageView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
     override fun onGlobalLayout() {
         log("执行了onGlobalLayout| NULL:" + (drawable == null))
         if (drawable == null || width == 0 || height == 0) return
-
         if (!isInit) {
-            log("初始化完毕")
-            val width = width
-            val height = height
-            val screenWeight = height * 1.0f / width
-
-            val imageH = drawable.intrinsicHeight // 图片高度
-            val imageW = drawable.intrinsicWidth // 图片宽度
-
-            val imageWeight = imageH * 1.0f / imageW
-            //如果当前屏幕高宽比 大于等于 图片高宽比,就缩放图片
-            if (screenWeight >= imageWeight) {
-                MyLog.d(TAG,"screenWeight >= imageWeight imageW = $imageW width = $width imageH = $imageH height = $height" )
-                var scale = 1.0f
-                //图片比当前View宽,但是比当前View矮
-                if (imageW > width && imageH <= height) {
-                    scale = width * 1.0f / imageW //根据宽度缩放
-                    MyLog.d(TAG,"图片比当前View宽,但是比当前View矮")
-                }
-
-                //图片比当前View窄,但是比当前View高
-                if (imageH > height && imageW <= width) {
-                    scale = height * 1.0f / imageH //根据高度缩放
-                    MyLog.d(TAG,"图片比当前View窄,但是比当前View高")
-
-                }
-
-                //图片高宽都大于当前View,那么就根据最小的缩放值来缩放
-                if (imageH > height && imageW > width) {
-                    scale = Math.min(width * 1.0f / imageW, height * 1.0f / imageH)
-                    log("max scale:$scale")
-                }
-
-                if (imageH < height && imageW < width) {
-                    scale = Math.min(width * 1.0f / imageW, height * 1.0f / imageH)
-                    log("min scale:$scale")
-                }
-
-                /**
-                 * 设置缩放比率
-                 */
-                mMinScale = scale
-                mMidScale = mMinScale * 2
-                mMaxScale = mMinScale * 4
-                /**
-                 * 把图片移动到中心点去
-                 */
-                val dx = getWidth() / 2 - imageW / 2
-                val dy = getHeight() / 2 - imageH / 2
-
-                /**
-                 * 设置缩放(全图浏览模式,用最小的缩放比率去查看图片就好了)/移动位置
-                 */
-                mMatrix!!.postTranslate(dx.toFloat(), dy.toFloat())
-                mMatrix!!.postScale(
-                    mMinScale,
-                    mMinScale,
-                    (width / 2).toFloat(),
-                    (height / 2).toFloat()
-                )
-            } else {
-                MyLog.d(TAG,"!screenWeight >= imageWeight")
-
-                //将宽度缩放至屏幕比例缩放(长图,全图预览)
-                val scale = width * 1.0f / imageW
-                /**
-                 * 设置缩放比率
-                 */
-                mMaxScale = scale
-                mMidScale = mMaxScale / 2
-                mMinScale = mMaxScale / 4
-
-                //因为是长图浏览,所以用最大的缩放比率去加载长图
-                //mMatrix.postTranslate(0, 0);
-                mMatrix!!.postScale(mMaxScale, mMaxScale, 0f, 0f)
-            }
-
-            imageMatrix = mMatrix
             isInit = true
+            thread {
+                //共享元素动画和缩放有冲突导致初始化大小不对，暂时加个延时
+               Thread.sleep(500)
+               (context as AppCompatActivity).runOnUiThread {
+                   log("初始化完毕")
+                   val width = width
+                   val height = height
+                   val screenWeight = height * 1.0f / width
+                   val imageH = drawable.intrinsicHeight // 图片高度
+                   val imageW = drawable.intrinsicWidth // 图片宽度
+                   val imageWeight = imageH * 1.0f / imageW
+                   //如果当前屏幕高宽比 大于等于 图片高宽比,就缩放图片
+                   if (screenWeight >= imageWeight) {
+                       MyLog.d(TAG,"screenWeight >= imageWeight imageW = $imageW width = $width imageH = $imageH height = $height" )
+                       var scale = 1.0f
+                       //图片比当前View宽,但是比当前View矮
+                       if (imageW > width && imageH <= height) {
+                           scale = width * 1.0f / imageW //根据宽度缩放
+                           MyLog.d(TAG,"图片比当前View宽,但是比当前View矮")
+                       }
+
+                       //图片比当前View窄,但是比当前View高
+                       if (imageH > height && imageW <= width) {
+                           scale = height * 1.0f / imageH //根据高度缩放
+                           MyLog.d(TAG,"图片比当前View窄,但是比当前View高")
+
+                       }
+
+                       //图片高宽都大于当前View,那么就根据最小的缩放值来缩放
+                       if (imageH > height && imageW > width) {
+                           scale = Math.min(width * 1.0f / imageW, height * 1.0f / imageH)
+                           log("max scale:$scale")
+                       }
+
+                       if (imageH < height && imageW < width) {
+                           scale = Math.min(width * 1.0f / imageW, height * 1.0f / imageH)
+                           log("min scale:$scale")
+                       }
+
+                       /**
+                        * 设置缩放比率
+                        */
+                       mMinScale = scale
+                       mMidScale = mMinScale * 2
+                       mMaxScale = mMinScale * 4
+                       /**
+                        * 把图片移动到中心点去
+                        */
+                       val dx = getWidth() / 2 - imageW / 2
+                       val dy = getHeight() / 2 - imageH / 2
+
+                       /**
+                        * 设置缩放(全图浏览模式,用最小的缩放比率去查看图片就好了)/移动位置
+                        */
+                       mMatrix!!.postTranslate(dx.toFloat(), dy.toFloat())
+                       mMatrix!!.postScale(
+                           mMinScale,
+                           mMinScale,
+                           (width / 2).toFloat(),
+                           (height / 2).toFloat()
+                       )
+                   } else {
+                       MyLog.d(TAG,"!screenWeight >= imageWeight")
+
+                       //将宽度缩放至屏幕比例缩放(长图,全图预览)
+                       val scale = width * 1.0f / imageW
+                       /**
+                        * 设置缩放比率
+                        */
+                       mMaxScale = scale
+                       mMidScale = mMaxScale / 2
+                       mMinScale = mMaxScale / 4
+
+                       //因为是长图浏览,所以用最大的缩放比率去加载长图
+                       //mMatrix.postTranslate(0, 0);
+                       mMatrix!!.postScale(mMaxScale, mMaxScale, 0f, 0f)
+                   }
+
+                   imageMatrix = mMatrix
+                   invalidate()
+               }
+
+           }
         }
     }
 
@@ -444,7 +451,7 @@ class ZoomImageView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
     }
 
     override fun onScale(detector: ScaleGestureDetector): Boolean {
-
+        MyLog.d(TAG,"onScale()")
         var scaleFactor = detector.scaleFactor//获取用户手势判断出来的缩放值
         val scale = scale
 

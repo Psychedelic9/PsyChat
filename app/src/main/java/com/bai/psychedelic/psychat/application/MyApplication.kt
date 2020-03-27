@@ -20,10 +20,12 @@ import androidx.core.content.ContextCompat.getSystemService
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import androidx.core.content.ContextCompat.getSystemService
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
-
-
-
-
+import android.content.Intent
+import android.content.BroadcastReceiver
+import android.content.IntentFilter
+import androidx.core.content.ContextCompat.getSystemService
+import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+import com.bai.psychedelic.psychat.receiver.CallReceiver
 
 
 class MyApplication : Application() {
@@ -31,6 +33,7 @@ class MyApplication : Application() {
         private val TAG = "MyApplication"
     }
 
+    private var mCallReceiver:CallReceiver ?= null
 
 
     override fun onCreate() {
@@ -87,6 +90,15 @@ class MyApplication : Application() {
         EMClient.getInstance().init(applicationContext, options)
         //在做打包混淆时，关闭debug模式，避免消耗不必要的资源
         EMClient.getInstance().setDebugMode(true)
+        registerReceiver()
+    }
+    private fun registerReceiver() {
+        val callFilter =
+            IntentFilter(EMClient.getInstance().callManager().incomingCallBroadcastAction)
+        if (mCallReceiver == null){
+            mCallReceiver = CallReceiver()
+        }
+        registerReceiver(mCallReceiver, callFilter)
     }
 
     private fun getAppName(pID: Int): String? {

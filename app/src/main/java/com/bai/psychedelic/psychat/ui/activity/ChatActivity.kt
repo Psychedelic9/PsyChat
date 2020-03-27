@@ -71,6 +71,10 @@ open class ChatActivity : AppCompatActivity() {
         }
     }
 
+    fun getViewModel():ChatViewModel{
+        return mViewModel
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mContext = this

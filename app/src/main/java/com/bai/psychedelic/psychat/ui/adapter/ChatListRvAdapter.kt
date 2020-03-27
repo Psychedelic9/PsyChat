@@ -177,8 +177,8 @@ class ChatListRvAdapter constructor(
                         val intent = Intent(mContext, ImageFullScreenActivity::class.java)
                         intent.putExtra(PIC_URL_FROM_THUMBNAIL, mList[position].content)
                         mContext.startActivity(
-                            intent,
-                            ActivityOptions.makeSceneTransitionAnimation(
+                            intent
+                            , ActivityOptions.makeSceneTransitionAnimation(
                                 mContext as AppCompatActivity,
                                 (holder.getBinding() as ChatRvListItemImageReceiveBinding)
                                     .chatActivityIvReceiveImageChatContent, "sharedImageView"
@@ -207,7 +207,8 @@ class ChatListRvAdapter constructor(
                         val intent = Intent(mContext, ImageFullScreenActivity::class.java)
                         intent.putExtra(PIC_URL_FROM_THUMBNAIL, mList[position].content)
                         mContext.startActivity(
-                            intent, ActivityOptions.makeSceneTransitionAnimation(
+                            intent
+                            , ActivityOptions.makeSceneTransitionAnimation(
                                 mContext as AppCompatActivity,
                                 (holder.getBinding() as ChatRvListItemImageSendBinding)
                                     .chatActivityIvSendImageChatContent,

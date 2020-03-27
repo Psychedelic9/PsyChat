@@ -250,6 +250,10 @@ class ChatViewModel : ViewModel(), KoinComponent {
         mConversation = mEMClient.chatManager().getConversation(mConversationUserId)
     }
 
+    fun getConversationUserId():String{
+        return mConversationUserId
+    }
+
     fun getConversation(): EMConversation {
         return mConversation
     }

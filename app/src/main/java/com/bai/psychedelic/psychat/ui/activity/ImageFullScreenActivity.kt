@@ -42,6 +42,11 @@ class ImageFullScreenActivity : AppCompatActivity() {
         Glide.with(mContext).load(mUrl).into(mBinding.activityImageFullScreenIv)
     }
 
+    override fun onPause() {
+        super.onPause()
+        mBinding.activityImageFullScreenIv.reSetState()
+    }
+
     private fun setStatusBar() {
         window.statusBarColor = resources.getColor(R.color.bar_color)
         StatusBarUtil.setStatusTextColor(true, this)

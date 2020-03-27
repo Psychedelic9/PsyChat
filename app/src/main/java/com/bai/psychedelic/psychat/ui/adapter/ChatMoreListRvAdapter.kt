@@ -15,8 +15,10 @@ import com.bai.psychedelic.psychat.R
 import com.bai.psychedelic.psychat.data.entity.ChatMoreEntity
 import com.bai.psychedelic.psychat.databinding.ChatMoreRvItemBinding
 import com.bai.psychedelic.psychat.ui.activity.ChatActivity
+import com.bai.psychedelic.psychat.ui.activity.VoiceCallActivity
 import com.bai.psychedelic.psychat.utils.START_ACTIVITY_CAMERA
 import com.bai.psychedelic.psychat.utils.START_ACTIVITY_IMAGE
+import com.bai.psychedelic.psychat.utils.START_ACTIVITY_VOICE_CALL
 import java.io.File
 import java.io.IOException
 import java.util.*
@@ -56,6 +58,14 @@ class ChatMoreListRvAdapter constructor(
                 R.drawable.icon_camera -> {
                     (holder.getBinding() as ChatMoreRvItemBinding).chatMoreCl.setOnClickListener {
                         mContext.startActivityForResult(takePicByCamera(), START_ACTIVITY_CAMERA)
+                    }
+                }
+                R.drawable.icon_phone -> {
+                    (holder.getBinding() as ChatMoreRvItemBinding).chatMoreCl.setOnClickListener {
+                        val intent = Intent(mContext,VoiceCallActivity::class.java)
+                        intent.putExtra("isComingCall",false)
+                        intent.putExtra("username",mContext.getViewModel().getConversationUserId())
+                        mContext.startActivityForResult(intent, START_ACTIVITY_VOICE_CALL)
                     }
                 }
             }

@@ -41,6 +41,7 @@
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning">
 
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.bai.psychedelic.psychat.fileProvider"
@@ -50,11 +51,17 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
-        <activity android:name=".ui.activity.VideoFullScreenActivity"
+        <activity android:name=".ui.activity.VoiceCallActivity"
+            android:launchMode="singleTop"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity android:name=".ui.activity.VideoCallActivity"
+            android:launchMode="singleTop"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name=".ui.activity.VideoFullScreenActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="singleTop"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
-
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".ui.activity.ImageFullScreenActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
