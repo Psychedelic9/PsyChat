@@ -26,6 +26,9 @@ import android.content.IntentFilter
 import androidx.core.content.ContextCompat.getSystemService
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import com.bai.psychedelic.psychat.receiver.CallReceiver
+import com.hyphenate.push.EMPushConfig
+import com.hyphenate.push.EMPushHelper
+import com.hyphenate.push.EMPushType
 
 
 class MyApplication : Application() {
@@ -34,10 +37,11 @@ class MyApplication : Application() {
     }
 
     private var mCallReceiver:CallReceiver ?= null
-
+    private lateinit var mContext: Context
 
     override fun onCreate() {
         super.onCreate()
+        mContext = this.applicationContext
         MyLog.d(TAG, "onCreate")
 
         Realm.init(applicationContext)
@@ -86,12 +90,26 @@ class MyApplication : Application() {
             return
         }
 
+        //开启第三方推送
+        val builder = EMPushConfig.Builder(mContext)
+//        builder.enableVivoPush() // 推送证书相关信息配置在AndroidManifest.xml中
+//            .enableMeiZuPush(String appId, String appKey)
+//            .enableMiPush(String appId, String appKey)
+//            .enableOppoPush(String appKey, String appSecret)
+            .enableHWPush() //开发者需要调用该方法来开启华为推送
+//            .enableFCM(String senderId); //开发者需要调用该方法来开启FCM推送
+        options.pushConfig = builder.build()
+
         //初始化
         EMClient.getInstance().init(applicationContext, options)
         //在做打包混淆时，关闭debug模式，避免消耗不必要的资源
         EMClient.getInstance().setDebugMode(true)
         registerReceiver()
+
+
     }
+
+
     private fun registerReceiver() {
         val callFilter =
             IntentFilter(EMClient.getInstance().callManager().incomingCallBroadcastAction)

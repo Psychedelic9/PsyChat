@@ -1,0 +1,12 @@
+{
+	"client":{
+		"cp_id":"260086000250155333",
+		"product_id":"9105385871708606895",
+		"client_id":"328798681031509120",
+		"client_secret":"95E7C64F1571D7E1B237F316A5F8F5490DCABB7B31B7CD9333F75C82DC195430",
+		"app_id":"101949049",
+		"package_name":"com.bai.psychedelic.psychat",
+		"api_key":"CV6n3t5mWe8HmQg9B5asxvse5Mtfy3jY38ULeZUamgZJP/p2sDwkSijTDIR0AxU5TrprtRXsc4MhZaPreXz6R8B9RODo"
+	},
+	"configuration_version":"1.0"
+}

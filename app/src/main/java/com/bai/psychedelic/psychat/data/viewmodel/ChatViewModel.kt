@@ -1,6 +1,5 @@
 package com.bai.psychedelic.psychat.data.viewmodel
 
-import android.net.Uri
 import androidx.lifecycle.ViewModel
 import com.bai.psychedelic.psychat.data.entity.ChatItemEntity
 import org.koin.core.KoinComponent
@@ -9,7 +8,10 @@ import com.bai.psychedelic.psychat.utils.*
 import com.hyphenate.EMCallBack
 import com.hyphenate.chat.*
 import com.bai.psychedelic.psychat.ui.activity.ChatActivity
-import java.io.File
+import org.json.JSONException
+import org.json.JSONObject
+
+
 
 
 class ChatViewModel : ViewModel(), KoinComponent {
@@ -179,71 +181,85 @@ class ChatViewModel : ViewModel(), KoinComponent {
         callback: ChatActivity.SendMediaCallback
     ) {
         val message = EMMessage.createVideoSendMessage(videoPath,imagePath,length,mConversationUserId)
-        message.setMessageStatusCallback(object:EMCallBack{
-            override fun onSuccess() {
-                callback.onSuccess()
-            }
-
-            override fun onProgress(progress: Int, status: String?) {
-                MyLog.d(TAG,"视频消息发送中...")
-            }
-
-            override fun onError(code: Int, error: String?) {
-                callback.onFailed(code,error.toString())
-            }
-        })
-        if (mConversation.type == EMConversation.EMConversationType.GroupChat) {
-            message.chatType = EMMessage.ChatType.GroupChat
-        }
-        mEMClient.chatManager().sendMessage(message)
+        sendMessage(message,callback)
     }
 
 
     fun sendImageMessage(path: String, callback: ChatActivity.SendMediaCallback) {
-
         val message = EMMessage.createImageSendMessage(path, false, mConversationUserId)
+        sendMessage(message,callback)
+    }
 
-        message.setMessageStatusCallback(object : EMCallBack {
+    fun sendTextMessage(content: String,callback: ChatActivity.SendMediaCallback) {
+        val message = EMMessage.createTxtSendMessage(content, mConversationUserId)
+        sendMessage(message,callback)
+    }
+
+    fun sendVoiceMessage(voiceFilePath: String, voiceTimeLength: Int, callback: ChatActivity.SendMediaCallback) {
+        val message =
+            EMMessage.createVoiceSendMessage(voiceFilePath, voiceTimeLength, mConversationUserId)
+        sendMessage(message,callback)
+    }
+
+    private fun sendMessage(message:EMMessage, callback: ChatActivity.SendMediaCallback){
+
+        message.setMessageStatusCallback(object:EMCallBack{
             override fun onSuccess() {
                 callback.onSuccess()
-                MyLog.d(TAG, "sendImageMessage onSuccess")
+                MyLog.d(TAG, "sendMessage onSuccess messageId = ${message.msgId}")
             }
 
             override fun onProgress(progress: Int, status: String?) {
-                MyLog.d(TAG, "sendImageMessage onProgress")
+                MyLog.d(TAG, "sendMessage onProgress messageId = ${message.msgId}")
 
             }
 
             override fun onError(code: Int, error: String?) {
-                MyLog.d(TAG, "sendImageMessage onError code = $code error = $error")
+                MyLog.d(TAG, "sendMessage onError messageId = ${message.msgId} code = $code error = $error")
                 callback.onFailed(code,error.toString())
             }
+
         })
-
-        val localUrl = (message.body as EMImageMessageBody).localUrl
         if (mConversation.type == EMConversation.EMConversationType.GroupChat) {
             message.chatType = EMMessage.ChatType.GroupChat
         }
+        // 设置自定义推送提示
+        val extObject = JSONObject()
+        try {
+            extObject.put("em_push_name", "新消息")
+            when(message.type){
+                EMMessage.Type.TXT->{
+                    extObject.put("em_push_content", (message.body as EMTextMessageBody).message)
+                }
+                EMMessage.Type.IMAGE->{
+                    extObject.put("em_push_content", "[图片]")
+                }
+                EMMessage.Type.VIDEO->{
+                    extObject.put("em_push_content", "[视频]")
+                }
+                EMMessage.Type.VOICE->{
+                    extObject.put("em_push_content", "[语音]")
+                }
+                EMMessage.Type.LOCATION->{
+                    extObject.put("em_push_content", "[位置]")
+                }
+                EMMessage.Type.FILE->{
+                    extObject.put("em_push_content", "[文件]")
+                }
+                EMMessage.Type.CMD->{
+//                    extObject.put("em_push_content", "[命令]")
+                }
+            }
+            extObject.put("em_huawei_push_badge_class", "com.bai.psychedelic.psychat.ui.activity.SplashActivity")
+        } catch (e: JSONException) {
+            e.printStackTrace()
+        }
+        // 将推送扩展设置到消息中
+        message.setAttribute("em_apns_ext", extObject)
 
         mEMClient.chatManager().sendMessage(message)
     }
 
-    fun sendTextMessage(content: String) {
-        val message = EMMessage.createTxtSendMessage(content, mConversationUserId)
-        if (mConversation.type == EMConversation.EMConversationType.GroupChat) {
-            message.chatType = EMMessage.ChatType.GroupChat
-        }
-        mEMClient.chatManager().sendMessage(message)
-    }
-
-    fun sendVoiceMessage(voiceFilePath: String, voiceTimeLength: Int) {
-        val message =
-            EMMessage.createVoiceSendMessage(voiceFilePath, voiceTimeLength, mConversationUserId)
-        if (mConversation.type == EMConversation.EMConversationType.GroupChat) {
-            message.chatType = EMMessage.ChatType.GroupChat
-        }
-        mEMClient.chatManager().sendMessage(message)
-    }
 
     fun setConversationUserId(id: String) {
         this.mConversationUserId = id

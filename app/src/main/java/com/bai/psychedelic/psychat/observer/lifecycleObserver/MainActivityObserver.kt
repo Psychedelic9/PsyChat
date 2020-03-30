@@ -20,8 +20,15 @@ import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import com.bai.psychedelic.psychat.utils.*
 import android.Manifest.permission.ACCESS_FINE_LOCATION
-
-
+import android.net.Uri
+import android.os.Bundle
+import android.text.TextUtils
+import android.util.Log
+import com.huawei.agconnect.config.AGConnectServicesConfig
+import com.huawei.hms.aaid.HmsInstanceId
+import com.huawei.hms.api.HuaweiApiClient
+import com.huawei.hms.common.ApiException
+import java.lang.Exception
 
 
 class MainActivityObserver constructor(context: AppCompatActivity) : LifecycleObserver,KoinComponent {
@@ -44,6 +51,49 @@ class MainActivityObserver constructor(context: AppCompatActivity) : LifecycleOb
         ,BROADCAST_STICKY,REQUEST_IGNORE_BATTERY_OPTIMIZATIONS,SYSTEM_ALERT_WINDOW,READ_LOGS
         )
         requestPermission(permissions, REQUEST_PERMISSIONS)
+        getToken()
+    }
+    private fun getToken() {
+        object : Thread() {
+            override fun run() {
+                try {
+                    // read from agconnect-services.json
+                    val appId = AGConnectServicesConfig.fromContext(mContext)
+                        .getString("client/app_id")
+                    val token = HmsInstanceId.getInstance(mContext).getToken(appId, "HCM")
+                    MyLog.d(TAG, "get token:$token")
+                    if (!TextUtils.isEmpty(token)) {
+                        sendRegTokenToServer(token)
+                    }
+                    MyLog.d(TAG,"get token:$token")
+                } catch (e: ApiException) {
+                    e.printStackTrace()
+                    MyLog.d(TAG,"get token failed, $e")
+                }
+            }
+        }.start()
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    fun cleanBadgeNumber(){
+        MyLog.d(TAG,"cleanBadgeNumber")
+        try {
+            val extra = Bundle()
+            extra.putString("package", "com.bai.psychedelic.psychat")
+            extra.putString("class", "com.bai.psychedelic.psychat.ui.activity.SplashActivity")
+            extra.putInt("badgenumber", 0)
+            mContext.contentResolver.call(
+                Uri.parse("content://com.huawei.android.launcher.settings/badge/")
+                , "change_badge", null, extra)
+        }catch (e:Exception){
+            e.printStackTrace()
+        }
+
+    }
+
+    private fun sendRegTokenToServer(token: String) {
+        MyLog.d(TAG, "sending token to server. token:$token")
+        mEMClient.sendHMSPushTokenToServer(token)
     }
 
     private fun lackPermission(permissions: Array<String>):Boolean{

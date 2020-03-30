@@ -210,7 +210,16 @@ open class ChatActivity : AppCompatActivity() {
         mBinding.chatActivityRecordButton.setVoiceRecorderCallback(object :
             RecordButton.VoiceRecorderCallback {
             override fun onVoiceRecordComplete(voiceFilePath: String, voiceTimeLength: Int) {
-                mViewModel.sendVoiceMessage(voiceFilePath, voiceTimeLength)
+                mViewModel.sendVoiceMessage(voiceFilePath, voiceTimeLength,object:SendMediaCallback{
+                    override fun onSuccess() {
+
+                    }
+
+                    override fun onFailed(code: Int, error: String) {
+
+                    }
+
+                })
                 refreshChatList()
             }
 
@@ -249,7 +258,16 @@ open class ChatActivity : AppCompatActivity() {
     }
 
     fun sendMessageButtonClick(view: View) {
-        mViewModel.sendTextMessage(mBinding.chatActivityEt.text.toString())
+        mViewModel.sendTextMessage(mBinding.chatActivityEt.text.toString(),object : SendMediaCallback{
+            override fun onSuccess() {
+
+            }
+
+            override fun onFailed(code: Int, error: String) {
+
+            }
+
+        })
         refreshChatList()
         mBinding.chatActivityEt.setText("")
     }

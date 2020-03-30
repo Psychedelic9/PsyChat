@@ -24,3 +24,13 @@
 -keep class internal.org.apache.http.entity.** {*;}
 -keep class com.superrtc.** {*;}
 -dontwarn  com.superrtc.**
+
+-ignorewarnings
+-keepattributes *Annotation*
+-keepattributes Exceptions
+-keepattributes InnerClasses
+-keepattributes Signature
+-keepattributes SourceFile,LineNumberTable
+-keep class com.hianalytics.android.**{*;}
+-keep class com.huawei.updatesdk.**{*;}
+-keep class com.huawei.hms.**{*;}

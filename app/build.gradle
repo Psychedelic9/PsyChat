@@ -3,6 +3,7 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'realm-android'
+apply plugin: 'com.huawei.agconnect'
 //realm-android需要放到kotlin-kapt后
 android {
     compileSdkVersion 29
@@ -23,11 +24,25 @@ android {
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
+
+    signingConfigs {
+        config {
+            keyAlias 'erbao'
+            keyPassword 'weeqqq'
+            storeFile file('erbao.jks')
+            storePassword 'weeqqq'
+        }
+    }
+
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8
     }
     buildTypes {
+        debug {
+            signingConfig signingConfigs.config
+        }
         release {
+            signingConfig signingConfigs.config
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
@@ -76,5 +91,7 @@ dependencies {
 
     //环信IM SDK
     api 'com.hyphenate:hyphenate-sdk:3.6.3'
+    //华为推送
+    implementation 'com.huawei.hms:push:4.0.2.300'
 
 }

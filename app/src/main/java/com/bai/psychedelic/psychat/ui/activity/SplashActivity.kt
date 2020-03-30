@@ -10,6 +10,7 @@ import androidx.lifecycle.Observer
 import com.bai.psychedelic.psychat.R
 import com.bai.psychedelic.psychat.data.viewmodel.SplashViewModel
 import com.bai.psychedelic.psychat.databinding.ActivitySplashBinding
+import com.bai.psychedelic.psychat.utils.MyLog
 import com.bai.psychedelic.psychat.utils.SP_SPLASH_TEXT
 import com.bai.psychedelic.psychat.utils.StatusBarUtil
 import com.hyphenate.chat.EMClient
@@ -17,6 +18,9 @@ import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.viewModel
 import java.lang.Exception
 import java.util.concurrent.ExecutorService
+
+
+
 
 class SplashActivity : AppCompatActivity() {
     companion object{
@@ -26,6 +30,7 @@ class SplashActivity : AppCompatActivity() {
     private val mEMClient: EMClient by inject()
     private val mSingleExecutor: ExecutorService by inject()
     private lateinit var mContext: Context
+    private val TAG = "SplashActivity"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         window.statusBarColor = Color.TRANSPARENT

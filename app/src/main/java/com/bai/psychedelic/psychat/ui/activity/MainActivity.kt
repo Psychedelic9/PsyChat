@@ -20,6 +20,8 @@ import com.bai.psychedelic.psychat.utils.*
 import com.hyphenate.chat.EMClient
 import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.viewModel
+import android.net.Uri
+
 
 class MainActivity : AppCompatActivity() {
     private lateinit var mContext:Context
@@ -141,4 +143,5 @@ class MainActivity : AppCompatActivity() {
        }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
+
 }
