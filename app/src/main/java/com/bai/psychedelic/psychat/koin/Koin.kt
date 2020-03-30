@@ -5,14 +5,9 @@ package com.bai.psychedelic.psychat.koin
 import com.bai.psychedelic.psychat.data.viewmodel.*
 import com.bai.psychedelic.psychat.repository.DataRepository
 import com.hyphenate.chat.EMClient
-import okhttp3.Cache
-import okhttp3.OkHttpClient
 import org.koin.android.viewmodel.dsl.viewModel
 import org.koin.core.module.Module
 import org.koin.dsl.module
-import retrofit2.Retrofit
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
-import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
@@ -95,7 +90,7 @@ val viewModelModule: Module = module {
     viewModel { MainViewModel() }
     viewModel { LoginViewModel() }
 //    viewModel { RegisterViewModel(get())}
-    viewModel { FragmentWeChatViewModel() }
+    viewModel { FragmentChatListViewModel() }
     viewModel { FragmentContactListViewModel() }
 //    viewModel { FindModel() }
     viewModel { FragmentMeViewModel() }

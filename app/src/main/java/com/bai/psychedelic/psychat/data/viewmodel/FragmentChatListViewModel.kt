@@ -15,7 +15,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
-class FragmentWeChatViewModel : ViewModel(),KoinComponent {
+class FragmentChatListViewModel : ViewModel(),KoinComponent {
     private lateinit var mAllConversations:Map<String, EMConversation>
     private val mEMClient:EMClient by inject()
     @SuppressLint("SimpleDateFormat")

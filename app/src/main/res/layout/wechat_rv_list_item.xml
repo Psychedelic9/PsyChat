@@ -9,7 +9,7 @@
             type="com.bai.psychedelic.psychat.data.entity.WechatRvListItemEntity" />
         <variable
             name="viewModel"
-            type="com.bai.psychedelic.psychat.data.viewmodel.FragmentWeChatViewModel" />
+            type="com.bai.psychedelic.psychat.data.viewmodel.FragmentChatListViewModel" />
     </data>
 
     <LinearLayout

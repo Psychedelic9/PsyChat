@@ -13,22 +13,21 @@ import com.bai.psychedelic.psychat.BR
 import com.bai.psychedelic.psychat.R
 import com.bai.psychedelic.psychat.ui.adapter.ConversationListRvAdapter
 import com.bai.psychedelic.psychat.data.entity.WechatRvListItemEntity
-import com.bai.psychedelic.psychat.data.viewmodel.FragmentWeChatViewModel
+import com.bai.psychedelic.psychat.data.viewmodel.FragmentChatListViewModel
 import com.bai.psychedelic.psychat.databinding.WeChatFragmentBinding
 import com.bai.psychedelic.psychat.observer.lifecycleObserver.WeChatFragmentObserver
 import com.bai.psychedelic.psychat.utils.MyLog
 import org.koin.android.viewmodel.ext.android.viewModel
-import java.lang.Exception
 
-class WeChatFragment : Fragment() {
-    private val mViewModel:FragmentWeChatViewModel by viewModel()
+class ChatListFragment : Fragment() {
+    private val mViewModel:FragmentChatListViewModel by viewModel()
     private lateinit var mContext:AppCompatActivity
     private lateinit var mBinding: WeChatFragmentBinding
     private lateinit var mRootView: View
     private lateinit var mChatList : ArrayList<WechatRvListItemEntity>
     private lateinit var mAdapter : ConversationListRvAdapter
     private lateinit var mLifecycleObserver: WeChatFragmentObserver
-    private val TAG = "WeChatFragment"
+    private val TAG = "ChatListFragment"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mContext = activity as AppCompatActivity

@@ -6,7 +6,7 @@
     <data>
         <variable
             name="model"
-            type="com.bai.psychedelic.psychat.data.viewmodel.FragmentWeChatViewModel"/>
+            type="com.bai.psychedelic.psychat.data.viewmodel.FragmentChatListViewModel"/>
     </data>
     <LinearLayout
         android:orientation="vertical"

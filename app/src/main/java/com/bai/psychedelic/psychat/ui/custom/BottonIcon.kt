@@ -46,7 +46,7 @@ class BottonIcon @JvmOverloads constructor(
         addView(mView)
     }
 
-    public fun setProgress(progress: Float) {
+     fun setProgress(progress: Float) {
         mImageView?.alpha = (1 - progress)
         mImageViewSelect?.alpha = (progress)
         mTextView?.setTextColor(ArgbEvaluator().evaluate(progress,COLORDEFULT,COLORSELECT)as Int)

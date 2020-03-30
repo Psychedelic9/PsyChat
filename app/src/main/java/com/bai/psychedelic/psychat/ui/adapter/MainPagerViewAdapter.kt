@@ -6,7 +6,7 @@ import androidx.fragment.app.FragmentPagerAdapter
 import com.bai.psychedelic.psychat.ui.fragment.ContactListFragment
 import com.bai.psychedelic.psychat.ui.fragment.FindFragment
 import com.bai.psychedelic.psychat.ui.fragment.MeFragment
-import com.bai.psychedelic.psychat.ui.fragment.WeChatFragment
+import com.bai.psychedelic.psychat.ui.fragment.ChatListFragment
 import kotlin.collections.ArrayList
 
 class MainPagerViewAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm,BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
@@ -14,7 +14,7 @@ class MainPagerViewAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm,BEHAVI
     private val mTitles = ArrayList<String>(listOf("微信","通讯录","发现","我"))
     init {
         fragments.clear()
-        fragments.add(WeChatFragment())
+        fragments.add(ChatListFragment())
         fragments.add(ContactListFragment())
         fragments.add(FindFragment())
         fragments.add(MeFragment())

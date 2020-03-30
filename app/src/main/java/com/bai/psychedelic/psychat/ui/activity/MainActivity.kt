@@ -7,7 +7,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.LinearLayout
-import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.viewpager.widget.ViewPager
 import com.bai.psychedelic.psychat.R
@@ -20,7 +19,6 @@ import com.bai.psychedelic.psychat.utils.*
 import com.hyphenate.chat.EMClient
 import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.viewModel
-import android.net.Uri
 
 
 class MainActivity : AppCompatActivity() {
@@ -74,7 +72,7 @@ class MainActivity : AppCompatActivity() {
                 var title: String? = null
                 when (position) {
                     0 -> {
-                        title = "微信"
+                        title = "聊天"
                     }
                     1 -> {
                         title = "通讯录"

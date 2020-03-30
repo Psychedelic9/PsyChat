@@ -1,11 +1,9 @@
 package com.bai.psychedelic.psychat.observer.lifecycleObserver
 
-import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
-import com.bai.psychedelic.psychat.ui.fragment.WeChatFragment
+import com.bai.psychedelic.psychat.ui.fragment.ChatListFragment
 import com.bai.psychedelic.psychat.utils.MyLog
 import com.hyphenate.EMMessageListener
 import com.hyphenate.chat.EMClient
@@ -13,7 +11,7 @@ import com.hyphenate.chat.EMMessage
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 
-class WeChatFragmentObserver constructor(context: WeChatFragment) : LifecycleObserver,
+class WeChatFragmentObserver constructor(context: ChatListFragment) : LifecycleObserver,
     KoinComponent {
     private val TAG = "WeChatFragmentObserver"
     private val mEMClient: EMClient by inject()
