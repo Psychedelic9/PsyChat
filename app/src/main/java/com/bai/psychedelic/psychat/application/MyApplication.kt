@@ -26,6 +26,7 @@ import android.content.IntentFilter
 import androidx.core.content.ContextCompat.getSystemService
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import com.bai.psychedelic.psychat.receiver.CallReceiver
+import com.bai.psychedelic.psychat.utils.AppManager
 import com.hyphenate.push.EMPushConfig
 import com.hyphenate.push.EMPushHelper
 import com.hyphenate.push.EMPushType
@@ -43,7 +44,7 @@ class MyApplication : Application() {
         super.onCreate()
         mContext = this.applicationContext
         MyLog.d(TAG, "onCreate")
-
+        AppManager.register(this)
         Realm.init(applicationContext)
 
         val realmConfig = RealmConfiguration.Builder()

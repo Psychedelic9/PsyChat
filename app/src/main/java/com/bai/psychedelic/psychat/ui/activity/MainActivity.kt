@@ -142,4 +142,9 @@ class MainActivity : AppCompatActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
+    fun jumpToUserDetailActivity(view: View) {
+        val intent = Intent(mContext,UserDetailActivity::class.java)
+        startActivity(intent)
+    }
+
 }

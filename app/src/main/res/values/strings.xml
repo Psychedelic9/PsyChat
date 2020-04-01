@@ -57,5 +57,12 @@
     <string name="no_record_permission_please_allow">没有录音权限！请授权！</string>
     <string name="slide_down_load_more">下拉加载更多</string>
     <string name="can_not_find_video">找不到视频</string>
+    <string name="user_icon">头像</string>
+    <string name="user_detail">个人信息</string>
+    <string name="user_nick_name">昵称</string>
+    <string name="user_count">账号</string>
+    <string name="qr_code">二维码</string>
+    <string name="take_pic">拍照</string>
+    <string name="select_from_album">从相册选取</string>
 
 </resources>

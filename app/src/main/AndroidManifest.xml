@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.bai.psychedelic.psychat">
 
+    <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
@@ -26,8 +27,8 @@
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" /> <!-- 悬浮窗权限 -->
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.READ_LOGS" />
-    <uses-permission
-        android:name="com.huawei.android.launcher.permission.CHANGE_BADGE "/>
+    <uses-permission android:name="com.huawei.android.launcher.permission.CHANGE_BADGE " />
+
     <dist:module dist:instant="true" />
 
     <application
@@ -42,6 +43,7 @@
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning">
 
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.bai.psychedelic.psychat.fileProvider"
@@ -51,10 +53,16 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
-        <activity android:name=".ui.activity.VoiceCallActivity"
+        <activity android:name=".ui.activity.UserDetailActivity"
+            android:launchMode="singleTop"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            />
+        <activity
+            android:name=".ui.activity.VoiceCallActivity"
             android:launchMode="singleTop"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-        <activity android:name=".ui.activity.VideoCallActivity"
+        <activity
+            android:name=".ui.activity.VideoCallActivity"
             android:launchMode="singleTop"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
@@ -121,25 +129,25 @@
                 <action android:name="android.intent.action.USER_PRESENT" />
             </intent-filter>
         </receiver>
+
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
 
         <meta-data
             android:name="com.huawei.hms.client.appid"
-            android:value="appid=101949049" />
-        <!-- 接入HMSSDK 需要注册的provider，authorities 一定不能与其他应用一样，所以这边 com.hyphenate.chatuidemo 要替换上您应用的包名-->
+            android:value="appid=101949049" /> <!-- 接入HMSSDK 需要注册的provider，authorities 一定不能与其他应用一样，所以这边 com.hyphenate.chatuidemo 要替换上您应用的包名 -->
         <provider
             android:name="com.huawei.hms.update.provider.UpdateProvider"
             android:authorities="com.bai.psychedelic.psychat.hms.update.provider"
             android:exported="false"
-            android:grantUriPermissions="true" />
-        <!-- 接入HMSSDK 需要注册的provider，authorities 一定不能与其他应用一样，所以这边 com.hyphenate.chatuidemo 要替换上您应用的包名-->
+            android:grantUriPermissions="true" /> <!-- 接入HMSSDK 需要注册的provider，authorities 一定不能与其他应用一样，所以这边 com.hyphenate.chatuidemo 要替换上您应用的包名 -->
         <provider
             android:name="com.huawei.updatesdk.fileprovider.UpdateSdkFileProvider"
             android:authorities="com.bai.psychedelic.psychat.updateSdk.fileProvider"
             android:exported="false"
-            android:grantUriPermissions="true"/>
+            android:grantUriPermissions="true" />
+
         <service
             android:name=".service.HWPushService"
             android:exported="false">

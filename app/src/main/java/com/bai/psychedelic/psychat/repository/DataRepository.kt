@@ -13,14 +13,6 @@ class DataRepository{
 //        )
     }
 
-    fun register(phone: String?, password: String?,
-                 success: (ResultEntity) -> Unit,
-                 failed: ((Throwable) -> Unit)?=null){
-//        addDisposable(webService.register(phone,password)
-//            .asyncSchedulers()
-//            .subscribeOn(Schedulers.io())
-//            .netSubscribe(success,failed)
-//        )
-    }
+
 
 }
