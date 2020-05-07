@@ -8,11 +8,13 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
+import android.text.TextUtils
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupWindow
+import android.widget.Toast
 import androidx.core.content.FileProvider
 import androidx.databinding.DataBindingUtil
 import com.bai.psychedelic.psychat.R
@@ -24,6 +26,9 @@ import com.bai.psychedelic.psychat.utils.START_ACTIVITY_CAMERA
 import com.bai.psychedelic.psychat.utils.START_ACTIVITY_IMAGE
 import com.bai.psychedelic.psychat.utils.StatusBarUtil
 import org.koin.android.viewmodel.ext.android.viewModel
+import top.zibin.luban.CompressionPredicate
+import top.zibin.luban.Luban
+import top.zibin.luban.OnCompressListener
 import java.io.File
 import java.io.IOException
 import java.util.*
@@ -79,6 +84,52 @@ class UserDetailActivity : AppCompatActivity() {
         }
     }
 
+    private fun getImagePathFromUri(uri:Uri):String{
+        val filePathColumn = arrayOf(MediaStore.Images.Media.DATA)
+        var cursor = contentResolver
+            .query(uri, filePathColumn, null, null, null)
+        if (cursor != null) {
+            cursor.moveToFirst()
+            val columnIndex = cursor.getColumnIndex(filePathColumn[0])
+            val picturePath = cursor.getString(columnIndex)
+            cursor.close()
+            cursor = null
+            MyLog.d(TAG, "getImagePathFromUri $picturePath")
+            return picturePath
+        }else{
+            MyLog.d(TAG, "getImagePathFromUri 获取图片地址失败！")
+            Toast.makeText(mContext,"获取图片地址失败!",Toast.LENGTH_LONG).show()
+            return "err"
+        }
+    }
+
+    private fun zipPicture(path:String){
+        Luban.with(mContext)
+        .load(path)
+        .ignoreBy(300)
+        .setTargetDir(externalCacheDir!!.absolutePath)
+        .filter(object: CompressionPredicate{
+            override fun apply(path: String?): Boolean {
+                return !(TextUtils.isEmpty(path) || path!!.toLowerCase().endsWith(".gif"))
+            }
+        })
+        .setCompressListener(object: OnCompressListener{
+            override fun onSuccess(file: File?) {
+                MyLog.d(TAG,"zipPicture 图片压缩成功")
+
+            }
+
+            override fun onError(e: Throwable?) {
+                MyLog.d(TAG,"zipPicture 图片压缩失败")
+            }
+
+            override fun onStart() {
+                MyLog.d(TAG,"zipPicture 图片压缩开始")
+            }
+        }).launch()
+    }
+
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == RESULT_OK) {
             when (requestCode) {
@@ -88,6 +139,8 @@ class UserDetailActivity : AppCompatActivity() {
                         MyLog.d(TAG, "uri = ${data.data}")
                         if (uri != null) {
                             //TODO:压缩图片上传服务器
+                            val imagePath = getImagePathFromUri(uri)
+
                         }
                     }
                 }
